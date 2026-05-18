@@ -1,0 +1,82 @@
+<!-- 
+ADMIN PAGE TEMPLATE
+Use this template for all admin pages in the admin/ folder
+Admin pages are protected with client-side authentication check
+-->
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Illuminated By Artistry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#f9fafb',
+                        'dark-bg': '#111827',
+                        'dark-card': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-white">
+    
+    <!-- Admin Sidebar -->
+    <div class="relative min-h-screen lg:flex">
+        <aside class="w-64 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:h-screen">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-800">
+                <h1 class="heading-font text-2xl text-gold">Admin Panel</h1>
+            </div>
+            
+            <nav class="p-6 space-y-2">
+                <a href="admin-dashboard.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Dashboard</a>
+                <a href="admin-artists.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Artists</a>
+                <a href="admin-products.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Products</a>
+                <a href="admin-services.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Services</a>
+                <a href="admin-orders.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Orders</a>
+                <a href="admin-gallery-management.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Gallery</a>
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+                    <button id="logout-btn" class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900 text-red-600" title="Logout">Logout</button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- YOUR ADMIN CONTENT HERE -->
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/setup.js"></script>
+    <script>
+        // Check if user is admin, redirect if not
+        if (!AuthManager.isAdmin()) {
+            window.location.href = '../user/login_page.html';
+        }
+        
+        // Setup logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            AuthManager.logout();
+            window.location.href = '../user/index.html';
+        });
+        
+        feather.replace();
+    </script>
+</body>
+</html>

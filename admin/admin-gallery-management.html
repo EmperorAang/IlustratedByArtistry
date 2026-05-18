@@ -1,0 +1,354 @@
+<!-- 
+ADMIN PAGE TEMPLATE
+Use this template for all admin pages in the admin/ folder
+Admin pages are protected with client-side authentication check
+-->
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Illuminated By Artistry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#f9fafb',
+                        'dark-bg': '#111827',
+                        'dark-card': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-white">
+    
+    <!-- Admin Sidebar -->
+    <div class="relative min-h-screen lg:flex">
+        <aside class="w-64 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:h-screen">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-800">
+                <h1 class="heading-font text-2xl text-gold">Admin Panel</h1>
+            </div>
+            
+            <nav class="p-6 space-y-2">
+                <a href="admin-dashboard.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Dashboard</a>
+                <a href="admin-artists.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Artists</a>
+                <a href="admin-products.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Products</a>
+                <a href="admin-services.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Services</a>
+                <a href="admin-orders.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Orders</a>
+                <a href="admin-gallery-management.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Gallery</a>
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+                    <button id="logout-btn" class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900 text-red-600" title="Logout">Logout</button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            
+
+            <main class="p-6 flex-1 overflow-y-auto">
+                <div class="container mx-auto px-4 sm:px-8">
+                    <div class="py-8">
+                        <div>
+                            <h2 class="text-2xl font-semibold leading-tight heading-font">Gallery Management</h2>
+                        </div>
+                        <div class="my-2 flex flex-col sm:flex-row gap-4">
+                            <div class="flex flex-row sm:mb-0">
+                            </div>
+                            <div class="block relative flex-1">
+                                <span class="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+                                    <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current text-gray-500">
+                                        <path
+                                            d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <input placeholder="Search"
+                                    class="appearance-none rounded-md border border-gray-400 block pl-8 pr-6 py-2 w-full bg-white dark:bg-dark-card text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
+                            </div>
+                            <div class="">
+                                <button id="addItemBtn" class="w-full sm:w-auto bg-gold hover:bg-yellow-400 text-black font-bold py-2 px-4 rounded">Add New Item</button>
+                            </div>
+                        </div>
+                        <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                            <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
+                                <table class="min-w-full leading-normal">
+                                    <thead>
+                                        <tr>
+                                            <th
+                                                class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                                                Image
+                                            </th>
+                                            <th
+                                                class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                                                Title
+                                            </th>
+                                            <th
+                                                class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                                                Description
+                                            </th>
+                                            <th
+                                                class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                                                Category
+                                            </th>
+                                            <th
+                                                class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                                                Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="gallery-table-body">
+                                       <!-- Dynamic content will be injected here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add/Edit Modal -->
+                <div id="itemModal" class="fixed z-50 inset-0 overflow-y-auto hidden">
+                    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                            <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
+                        </div>
+                        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                        <div class="inline-block align-bottom bg-white dark:bg-dark-card rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                            <form id="galleryForm">
+                                <div class="bg-white dark:bg-dark-card px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modalTitle">Add New Gallery Item</h3>
+                                    <input type="hidden" id="itemId">
+                                    <div class="mt-4">
+                                        <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
+                                        <input type="text" name="title" id="title" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+                                    </div>
+                                    <div class="mt-4">
+                                        <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+                                        <textarea id="description" name="description" rows="3" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white" required></textarea>
+                                    </div>
+                                    <div class="mt-4">
+                                        <label for="media_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Media Type</label>
+                                        <select id="media_type" name="media_type" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                            <option value="image">Image</option>
+                                            <option value="video">Video</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-4">
+                                        <label for="media_file" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Media File</label>
+                                        <input type="file" name="media_file" id="media_file" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                    </div>
+                                    <div class="mt-4">
+                                        <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
+                                        <input type="text" name="category" id="category" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gold text-black hover:bg-yellow-400 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">Save</button>
+                                    <button type="button" id="closeModalBtn" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const galleryTableBody = document.getElementById('gallery-table-body');
+            const addItemBtn = document.getElementById('addItemBtn');
+            const itemModal = document.getElementById('itemModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const galleryForm = document.getElementById('galleryForm');
+            const modalTitle = document.getElementById('modalTitle');
+            const itemIdInput = document.getElementById('itemId');
+            const titleInput = document.getElementById('title');
+            const descriptionInput = document.getElementById('description');
+            const mediaTypeInput = document.getElementById('media_type');
+            const mediaFileInput = document.getElementById('media_file');
+            const categoryInput = document.getElementById('category');
+
+            const apiBaseUrl = 'api/gallery.php';
+
+            function fetchGalleryItems() {
+                fetch(apiBaseUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        galleryTableBody.innerHTML = '';
+                        if (data.error) {
+                            console.error(data.error);
+                            return;
+                        }
+                        data.forEach(item => {
+                            const row = `
+                                <tr data-id="${item.id}">
+                                    <td class="px-5 py-5 border-b border-gray-200 bg-white dark:bg-dark-card text-sm">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 w-20 h-20">
+                                                ${item.media_type === 'video' 
+                                                    ? `<video src="${item.image_url}" class="w-full h-full rounded" controls></video>`
+                                                    : `<img class="w-full h-full rounded" src="${item.image_url}" alt="${item.title}" />`
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-5 py-5 border-b border-gray-200 bg-white dark:bg-dark-card text-sm">
+                                        <p class="text-gray-900 dark:text-gray-100 whitespace-no-wrap">${item.title}</p>
+                                    </td>
+                                    <td class="px-5 py-5 border-b border-gray-200 bg-white dark:bg-dark-card text-sm">
+                                        <p class="text-gray-900 dark:text-gray-100 whitespace-no-wrap">${item.description}</p>
+                                    </td>
+                                    <td class="px-5 py-5 border-b border-gray-200 bg-white dark:bg-dark-card text-sm">
+                                        <p class="text-gray-900 dark:text-gray-100 whitespace-no-wrap">${item.category}</p>
+                                    </td>
+                                    <td class="px-5 py-5 border-b border-gray-200 bg-white dark:bg-dark-card text-sm">
+                                        <button class="text-indigo-600 hover:text-indigo-900 edit-btn">Edit</button>
+                                        <button class="text-red-600 hover:text-red-900 ml-4 delete-btn">Delete</button>
+                                    </td>
+                                </tr>
+                            `;
+                            galleryTableBody.innerHTML += row;
+                        });
+                    })
+                    .catch(error => console.error('Error fetching gallery items:', error));
+            }
+
+            function handleContainerClick(e) {
+                const target = e.target;
+                const row = target.closest('tr');
+                if (!row) return;
+
+                const id = row.dataset.id;
+
+                if (target.classList.contains('edit-btn')) {
+                    const item = {
+                        id: id,
+                        title: row.cells[1].innerText,
+                        description: row.cells[2].innerText,
+                        category: row.cells[3].innerText,
+                        media_type: row.querySelector('video') ? 'video' : 'image'
+                    };
+                    
+                    modalTitle.textContent = 'Edit Gallery Item';
+                    itemIdInput.value = item.id;
+                    titleInput.value = item.title;
+                    descriptionInput.value = item.description;
+                    categoryInput.value = item.category;
+                    mediaTypeInput.value = item.media_type;
+                    mediaFileInput.removeAttribute('required');
+                    itemModal.classList.remove('hidden');
+                }
+
+                if (target.classList.contains('delete-btn')) {
+                    if (confirm('Are you sure you want to delete this item?')) {
+                        fetch(`${apiBaseUrl}?id=${id}`, {
+                            method: 'DELETE'
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                fetchGalleryItems();
+                            } else {
+                                alert('Error: ' + (data.error || 'Unknown error'));
+                            }
+                        })
+                        .catch(error => console.error('Error deleting item:', error));
+                    }
+                }
+            }
+
+            addItemBtn.addEventListener('click', () => {
+                galleryForm.reset();
+                itemIdInput.value = '';
+                modalTitle.textContent = 'Add New Gallery Item';
+                mediaFileInput.setAttribute('required', 'required');
+                itemModal.classList.remove('hidden');
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                itemModal.classList.add('hidden');
+            });
+
+            galleryForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData();
+                formData.append('title', titleInput.value);
+                formData.append('description', descriptionInput.value);
+                formData.append('category', categoryInput.value);
+                formData.append('media_type', mediaTypeInput.value);
+                
+                if (mediaFileInput.files.length > 0) {
+                    formData.append('media_file', mediaFileInput.files[0]);
+                }
+
+                const id = itemIdInput.value;
+                let url = apiBaseUrl;
+                let method = 'POST';
+
+                if (id) {
+                    formData.append('id', id);
+                    formData.append('_method', 'POST'); // Using POST to carry FormData
+                }
+                
+                fetch(url, {
+                    method: 'POST', // Always POST for multipart/form-data
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                    } else {
+                        fetchGalleryItems();
+                        itemModal.classList.add('hidden');
+                    }
+                })
+                .catch(error => {
+                    console.error('Form submission error:', error);
+                    alert('An error occurred. Please try again.');
+                });
+            });
+
+            galleryTableBody.addEventListener('click', handleContainerClick);
+
+            fetchGalleryItems();
+        });
+    </script>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/setup.js"></script>
+    <script>
+        // Check if user is admin, redirect if not
+        if (!AuthManager.isAdmin()) {
+            window.location.href = '../user/login_page.html';
+        }
+        
+        // Setup logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            AuthManager.logout();
+            window.location.href = '../user/index.html';
+        });
+        
+        feather.replace();
+    </script>
+</body>
+</html>

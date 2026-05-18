@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "products": [
+    {
+      "id": 1,
+      "name": "Aftercare Kit",
+      "description": "Complete aftercare kit with all necessary products for tattoo healing",
+      "price": 45.00,
+      "image": "../assets/Gallery/Images/products/product1.jpg",
+      "category": "aftercare"
+    },
+    {
+      "id": 2,
+      "name": "Premium Ink Set",
+      "description": "Professional grade tattoo ink set - 6 colors",
+      "price": 120.00,
+      "image": "../assets/Gallery/Images/products/product2.jpg",
+      "category": "ink"
+    },
+    {
+      "id": 3,
+      "name": "Design Consultation",
+      "description": "1-hour consultation with our lead artist for custom tattoo design",
+      "price": 75.00,
+      "image": "../assets/uploads/site-images/consultation.jpg",
+      "category": "service"
+    }
+  ]
+}

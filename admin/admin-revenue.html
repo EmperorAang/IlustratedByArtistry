@@ -1,0 +1,533 @@
+<!-- 
+ADMIN PAGE TEMPLATE
+Use this template for all admin pages in the admin/ folder
+Admin pages are protected with client-side authentication check
+-->
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Illuminated By Artistry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#f9fafb',
+                        'dark-bg': '#111827',
+                        'dark-card': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-white">
+    
+    <!-- Admin Sidebar -->
+    <div class="relative min-h-screen lg:flex">
+        <aside class="w-64 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:h-screen">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-800">
+                <h1 class="heading-font text-2xl text-gold">Admin Panel</h1>
+            </div>
+            
+            <nav class="p-6 space-y-2">
+                <a href="admin-dashboard.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Dashboard</a>
+                <a href="admin-artists.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Artists</a>
+                <a href="admin-products.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Products</a>
+                <a href="admin-services.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Services</a>
+                <a href="admin-orders.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Orders</a>
+                <a href="admin-gallery-management.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Gallery</a>
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+                    <button id="logout-btn" class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900 text-red-600" title="Logout">Logout</button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+<div class="p-6">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <h1 class="text-3xl font-bold heading-font">Revenue Dashboard</h1>
+        <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+            <button id="log-service-btn" class="w-full sm:w-auto bg-gold text-black font-bold py-2 px-4 rounded-md hover:bg-opacity-90 transition-all">
+                Log Completed Service
+            </button>
+            <div class="flex items-center space-x-2 w-full sm:w-auto">
+                <label for="period-select" class="text-sm font-medium">Period:</label>
+                <select id="period-select" class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold">
+                    <option value="30days" selected>Last 30 Days</option>
+                    <option value="7days">Last 7 Days</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="text-center py-16">
+        <div role="status">
+            <svg aria-hidden="true" class="inline w-10 h-10 text-gray-200 animate-spin dark:text-gray-600 fill-gold" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+            </svg>
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div id="dashboard-content" class="hidden">
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">Net Profit</h4>
+                <p id="net-profit" class="text-3xl font-bold mt-2"></p>
+            </div>
+            <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">Gross Revenue</h4>
+                <p id="total-revenue" class="text-3xl font-bold mt-2"></p>
+            </div>
+            <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">Total Costs</h4>
+                <p id="total-costs" class="text-3xl font-bold mt-2"></p>
+            </div>
+            <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">Completed Services</h4>
+                <p id="total-services" class="text-3xl font-bold mt-2"></p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">Service Revenue</h4>
+                <p id="service-revenue" class="text-3xl font-bold mt-2"></p>
+            </div>
+            <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">Total Orders</h4>
+                <p id="total-orders" class="text-3xl font-bold mt-2"></p>
+            </div>
+            <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">Order Revenue</h4>
+                <p id="order-revenue" class="text-3xl font-bold mt-2"></p>
+            </div>
+        </div>
+
+        <!-- Revenue Chart -->
+        <div class="relative bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 mb-6" style="height: 450px;">
+            <h4 class="text-lg font-semibold heading-font mb-4">Revenue Over Time</h4>
+            <canvas id="revenue-chart"></canvas>
+        </div>
+
+        <!-- Recent Services -->
+        <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 mb-6">
+            <h4 class="text-lg font-semibold heading-font mb-4">Recently Logged Services</h4>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Service</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Artist</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Date</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Price</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Cost</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-services-tbody" class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- Rows will be injected here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+            <h4 class="text-lg font-semibold heading-font mb-4">Recent Product Orders</h4>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Customer</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Items</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-orders-tbody" class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- Rows will be injected here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Log Service Modal -->
+<div id="log-service-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+    <div class="bg-light-card dark:bg-dark-card p-8 rounded-lg shadow-2xl w-full max-w-lg transform transition-all">
+        <div class="flex justify-between items-center mb-6">
+            <h4 class="text-2xl font-bold heading-font">Log a Completed Service</h4>
+            <button id="close-log-modal-btn" class="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 text-3xl">&times;</button>
+        </div>
+        <form id="log-service-form">
+            <div id="log-form-response" class="mb-4"></div>
+            <div class="space-y-4">
+                <div>
+                    <label for="service-id" class="block text-sm font-medium mb-1">Service Type</label>
+                    <select name="service_id" id="service-id" class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gold" required>
+                        <option value="">Loading services...</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="artist-id" class="block text-sm font-medium mb-1">Artist</label>
+                    <select name="artist_id" id="artist-id" class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gold" required>
+                        <option value="">Loading artists...</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="date-completed" class="block text-sm font-medium mb-1">Date Completed</label>
+                    <input type="date" name="date_completed" id="date-completed" class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gold" required>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="final-price" class="block text-sm font-medium mb-1">Final Price (ZAR)</label>
+                        <input type="number" name="final_price" id="final-price" step="0.01" class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gold" placeholder="e.g., 1500.00" required>
+                    </div>
+                    <div>
+                        <label for="material-cost" class="block text-sm font-medium mb-1">Material Cost (ZAR)</label>
+                        <input type="number" name="material_cost" id="material-cost" step="0.01" class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md" placeholder="e.g., 150.00">
+                    </div>
+                </div>
+                <div>
+                    <label for="notes" class="block text-sm font-medium mb-1">Notes (Optional)</label>
+                    <textarea name="notes" id="notes" rows="3" class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gold" placeholder="e.g., Client requested extra shading."></textarea>
+                </div>
+            </div>
+            <div class="mt-6 text-right">
+                <button type="submit" id="save-log-btn" class="bg-gold text-black font-bold py-2 px-6 rounded-md hover:bg-opacity-90 transition-all">
+                    Save Log
+                </button>
+            </div>
+        </form>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const periodSelect = document.getElementById('period-select');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const dashboardContent = document.getElementById('dashboard-content');
+    
+    const netProfitEl = document.getElementById('net-profit');
+    const totalRevenueEl = document.getElementById('total-revenue');
+    const totalCostsEl = document.getElementById('total-costs');
+    const totalServicesEl = document.getElementById('total-services');
+    const recentServicesTbody = document.getElementById('recent-services-tbody');
+    
+    const chartCanvas = document.getElementById('revenue-chart');
+    let revenueChart = null;
+
+    const logServiceModal = document.getElementById('log-service-modal');
+    const logServiceBtn = document.getElementById('log-service-btn');
+    const closeLogModalBtn = document.getElementById('close-log-modal-btn');
+    const logServiceForm = document.getElementById('log-service-form');
+    const serviceSelect = document.getElementById('service-id');
+
+    const formatCurrency = (amount) => new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(amount);
+    const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    const getStatusBadge = (status) => {
+        const lowerStatus = status.toLowerCase();
+        const statusClasses = {
+            processing: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+            shipped: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300',
+            delivered: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+        };
+        return `<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClasses[lowerStatus] || ''}">${status}</span>`;
+    };
+
+    const fetchRevenueData = async (period) => {
+        loadingSpinner.style.display = 'block';
+        dashboardContent.style.display = 'none';
+
+        try {
+            const response = await fetch(`api/revenue.php?period=${period}`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            if (data.error) throw new Error(data.error);
+            
+            updateDashboard(data);
+
+        } catch (error) {
+            console.error('Error fetching revenue data:', error);
+            dashboardContent.innerHTML = `<div class="text-center text-red-500">Failed to load revenue data: ${error.message}</div>`;
+        } finally {
+            loadingSpinner.style.display = 'none';
+            dashboardContent.style.display = 'block';
+        }
+    };
+
+    const updateDashboard = (data) => {
+        // Update summary cards
+        netProfitEl.textContent = formatCurrency(data.summary.netProfit);
+        totalRevenueEl.textContent = formatCurrency(data.summary.grossRevenue);
+        totalCostsEl.textContent = formatCurrency(data.summary.totalCosts);
+        totalServicesEl.textContent = data.summary.totalServicesCompleted;
+        
+        // Update new revenue cards
+        if (document.getElementById('service-revenue')) {
+            document.getElementById('service-revenue').textContent = formatCurrency(data.summary.serviceRevenue || 0);
+        }
+        if (document.getElementById('total-orders')) {
+            document.getElementById('total-orders').textContent = data.summary.totalOrders || 0;
+        }
+        if (document.getElementById('order-revenue')) {
+            document.getElementById('order-revenue').textContent = formatCurrency(data.summary.orderRevenue || 0);
+        }
+
+        // Update recent services table
+        if (data.recentServices.length > 0) {
+            recentServicesTbody.innerHTML = data.recentServices.map(service => {
+                const profit = service.final_price - service.material_cost;
+                const artistName = service.artist_name || 'N/A';
+                return `
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">${service.service_name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">${artistName}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">${formatDate(service.date_completed)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">${formatCurrency(service.final_price)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-red-500">${formatCurrency(service.material_cost)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold text-green-600">${formatCurrency(profit)}</td>
+                </tr>
+            `}).join('');
+        } else {
+            recentServicesTbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-gray-500">No services logged in this period.</td></tr>';
+        }
+
+        // Update recent orders table
+        const recentOrdersTbody = document.getElementById('recent-orders-tbody');
+        if (data.recentOrders && data.recentOrders.length > 0) {
+            recentOrdersTbody.innerHTML = data.recentOrders.map(order => `
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">${order.customer_name}</td>
+                    <td class="px-6 py-4 text-sm max-w-xs truncate">${order.items || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">${formatDate(order.order_date)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${getStatusBadge(order.status)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold text-gold">${formatCurrency(order.total_amount)}</td>
+                </tr>
+            `).join('');
+        } else {
+            recentOrdersTbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500">No orders in this period.</td></tr>';
+        }
+
+        // Update chart
+        updateChart(data.revenueOverTime);
+    };
+
+    const updateChart = (revenueData) => {
+        const labels = revenueData.map(d => d.date);
+        const revenues = revenueData.map(d => d.revenue);
+
+        const chartConfig = {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenue',
+                    data: revenues,
+                    borderColor: '#FFD700',
+                    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: '#FFD700',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day',
+                            tooltipFormat: 'MMM dd, yyyy',
+                            displayFormats: {
+                                day: 'MMM dd'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return formatCurrency(value);
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Revenue: ${formatCurrency(context.raw)}`;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        if (revenueChart) {
+            revenueChart.destroy();
+        }
+        revenueChart = new Chart(chartCanvas, chartConfig);
+    };
+
+    const openLogModal = async () => {
+        logServiceModal.classList.remove('hidden');
+        // Set date to today by default
+        document.getElementById('date-completed').valueAsDate = new Date();
+
+        // Fetch services for the dropdown
+        try {
+            const response = await fetch('api/services.php');
+            const services = await response.json();
+            if (services.error) throw new Error(services.error);
+
+            serviceSelect.innerHTML = '<option value="">Select a service</option>';
+            services.forEach(service => {
+                const option = document.createElement('option');
+                option.value = service.id;
+                option.textContent = `${service.name} (${formatCurrency(service.price)})`;
+                serviceSelect.appendChild(option);
+            });
+        } catch (error) {
+            serviceSelect.innerHTML = `<option value="">Error loading services</option>`;
+            console.error('Failed to fetch services:', error);
+        }
+
+        // Fetch artists for the dropdown
+        const artistSelect = document.getElementById('artist-id');
+        try {
+            const response = await fetch('api/artists.php');
+            const data = await response.json();
+            if (!data.success) throw new Error(data.message || 'Failed to load artists');
+
+            artistSelect.innerHTML = '<option value="">Select an artist</option>';
+            data.artists.forEach(artist => {
+                const option = document.createElement('option');
+                option.value = artist.id;
+                option.textContent = artist.name;
+                artistSelect.appendChild(option);
+            });
+        } catch (error) {
+            artistSelect.innerHTML = `<option value="">Error loading artists</option>`;
+            console.error('Failed to fetch artists:', error);
+        }
+    };
+
+    const closeLogModal = () => {
+        logServiceModal.classList.add('hidden');
+        logServiceForm.reset();
+        document.getElementById('log-form-response').innerHTML = '';
+    };
+
+    const handleLogSubmit = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const submitBtn = document.getElementById('save-log-btn');
+        const formResponse = document.getElementById('log-form-response');
+        const formData = new FormData(form);
+        
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+        formResponse.innerHTML = '';
+
+        try {
+            const response = await fetch('api/completed_services.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || result.error) {
+                throw new Error(result.error || 'An unknown error occurred.');
+            }
+
+            formResponse.innerHTML = `<div class="p-3 text-sm text-green-700 bg-green-100 rounded-lg">${result.message}</div>`;
+            setTimeout(() => {
+                closeLogModal();
+                fetchRevenueData(periodSelect.value); // Refresh dashboard data
+            }, 1500);
+
+        } catch (error) {
+            formResponse.innerHTML = `<div class="p-3 text-sm text-red-700 bg-red-100 rounded-lg">Error: ${error.message}</div>`;
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Save Log';
+        }
+    };
+
+    periodSelect.addEventListener('change', (e) => {
+        fetchRevenueData(e.target.value);
+    });
+
+    logServiceBtn.addEventListener('click', openLogModal);
+    closeLogModalBtn.addEventListener('click', closeLogModal);
+    logServiceForm.addEventListener('submit', handleLogSubmit);
+
+    // Initial data load
+    fetchRevenueData(periodSelect.value);
+});
+</script>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/setup.js"></script>
+    <script>
+        // Check if user is admin, redirect if not
+        if (!AuthManager.isAdmin()) {
+            window.location.href = '../user/login_page.html';
+        }
+        
+        // Setup logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            AuthManager.logout();
+            window.location.href = '../user/index.html';
+        });
+        
+        feather.replace();
+    </script>
+</body>
+</html>

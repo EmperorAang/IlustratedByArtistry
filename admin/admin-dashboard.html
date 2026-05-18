@@ -1,0 +1,263 @@
+<!-- 
+ADMIN PAGE TEMPLATE
+Use this template for all admin pages in the admin/ folder
+Admin pages are protected with client-side authentication check
+-->
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Illuminated By Artistry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#f9fafb',
+                        'dark-bg': '#111827',
+                        'dark-card': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-white">
+    
+    <!-- Admin Sidebar -->
+    <div class="relative min-h-screen lg:flex">
+        <aside class="w-64 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:h-screen">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-800">
+                <h1 class="heading-font text-2xl text-gold">Admin Panel</h1>
+            </div>
+            
+            <nav class="p-6 space-y-2">
+                <a href="admin-dashboard.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Dashboard</a>
+                <a href="admin-artists.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Artists</a>
+                <a href="admin-products.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Products</a>
+                <a href="admin-services.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Services</a>
+                <a href="admin-orders.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Orders</a>
+                <a href="admin-gallery-management.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Gallery</a>
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+                    <button id="logout-btn" class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900 text-red-600" title="Logout">Logout</button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            
+
+            <!-- Dashboard Content -->
+            <main class="p-6 flex-1 overflow-y-auto">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <a href="admin-revenue.html" class="block bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Total Net Profit</p>
+                                <h3 id="net-profit-stat" class="text-3xl font-bold mt-2 text-gold">...</h3>
+                            </div>
+                            <div class="p-3 rounded-full bg-gold/10 text-gold font-bold text-xl">
+                                R
+                            </div>
+                        </div>
+                    </a>
+                    <a href="admin-orders.html" class="block bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">New Orders</p>
+                                <h3 id="new-orders-stat" class="text-3xl font-bold mt-2 text-gold">...</h3>
+                            </div>
+                            <div class="p-3 rounded-full bg-gold/10 text-gold">
+                                <i data-feather="shopping-cart"></i>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="admin-messages.html" class="block bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Pending Inquiries</p>
+                                <h3 id="pending-inquiries-stat" class="text-3xl font-bold mt-2 text-gold">...</h3>
+                            </div>
+                            <div class="p-3 rounded-full bg-gold/10 text-gold">
+                                <i data-feather="message-circle"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md mb-8 border border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-semibold heading-font">Recent Orders</h3>
+                        <a href="admin-orders.html" class="text-gold hover:opacity-80 text-sm">View All</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Client</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Item</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="relative px-6 py-3"><span class="sr-only">Action</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-orders-tbody" class="bg-light-card dark:bg-dark-card divide-y divide-gray-200 dark:divide-gray-800">
+                                <!-- Dynamic content here -->
+                                <tr><td colspan="5" class="text-center p-4">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quick Actions & Messages -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                        <h3 class="text-xl font-semibold mb-4 heading-font">Quick Actions</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <a href="admin-products.html#add-product-form" class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg text-center hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                                <i data-feather="plus" class="mx-auto text-gold"></i>
+                                <p class="mt-2 text-sm font-medium">New Product</p>
+                            </a>
+                            <a href="admin-gallery-management.html" class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg text-center hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                                <i data-feather="upload" class="mx-auto text-gold"></i>
+                                <p class="mt-2 text-sm font-medium">Upload to Gallery</p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                        <h3 class="text-xl font-semibold mb-4 heading-font">Recent Messages</h3>
+                        <div id="recent-messages-container" class="space-y-4">
+                            <!-- Dynamic content here -->
+                            <p>Loading...</p>
+                        </div>
+                        <a href="admin-messages.html" class="block text-center mt-4 text-gold hover:opacity-80 text-sm">View All Messages</a>
+                    </div>
+                </div>
+            </main>
+        <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const formatCurrency = (amount) => new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(amount);
+            const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' });
+            
+            const getStatusBadge = (status) => {
+                const lowerStatus = status.toLowerCase();
+                const statusClasses = {
+                    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+                    processing: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+                    shipped: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300',
+                    delivered: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+                    cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
+                };
+                return `<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClasses[lowerStatus] || ''}">${status}</span>`;
+            };
+
+            const timeAgo = (date) => {
+                const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+                let interval = seconds / 31536000;
+                if (interval > 1) return Math.floor(interval) + " years ago";
+                interval = seconds / 2592000;
+                if (interval > 1) return Math.floor(interval) + " months ago";
+                interval = seconds / 86400;
+                if (interval > 1) return Math.floor(interval) + " days ago";
+                interval = seconds / 3600;
+                if (interval > 1) return Math.floor(interval) + " hours ago";
+                interval = seconds / 60;
+                if (interval > 1) return Math.floor(interval) + " minutes ago";
+                return Math.floor(seconds) + " seconds ago";
+            };
+
+            try {
+                const response = await fetch('api/dashboard-stats.php');
+                if (!response.ok) throw new Error('Failed to fetch stats');
+                const stats = await response.json();
+
+                // Update stat cards
+                document.getElementById('net-profit-stat').textContent = formatCurrency(stats.netProfit);
+                document.getElementById('new-orders-stat').textContent = stats.newOrders;
+                document.getElementById('pending-inquiries-stat').textContent = stats.pendingInquiries;
+
+                // Update recent orders
+                const ordersTbody = document.getElementById('recent-orders-tbody');
+                if (stats.recentOrders && stats.recentOrders.length > 0) {
+                    ordersTbody.innerHTML = stats.recentOrders.map(order => `
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-light-text dark:text-dark-text">${order.first_name} ${order.last_name}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${formatDate(order.order_date)}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 truncate" style="max-width: 200px;">${order.items || 'N/A'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">${getStatusBadge(order.status)}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="admin-orders.html?order_id=${order.id}" class="text-gold hover:opacity-80">View</a>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    ordersTbody.innerHTML = '<tr><td colspan="5" class="text-center p-4">No recent orders found.</td></tr>';
+                }
+
+                // Update recent messages
+                const messagesContainer = document.getElementById('recent-messages-container');
+                if (stats.recentMessages && stats.recentMessages.length > 0) {
+                    messagesContainer.innerHTML = stats.recentMessages.map(msg => `
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 rounded-full flex-shrink-0 bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
+                                <span class="text-lg font-bold">${msg.name.charAt(0)}</span>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-medium">${msg.name}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 truncate" style="max-width: 250px;">${msg.message}</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">${timeAgo(msg.created_at)}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    messagesContainer.innerHTML = '<p class="text-center text-gray-500">No recent messages.</p>';
+                }
+
+
+            } catch (error) {
+                console.error("Error fetching dashboard stats:", error);
+                document.getElementById('net-profit-stat').textContent = 'Error';
+                document.getElementById('new-orders-stat').textContent = 'Error';
+                document.getElementById('pending-inquiries-stat').textContent = 'Error';
+            }
+        });
+    </script>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/setup.js"></script>
+    <script>
+        // Check if user is admin, redirect if not
+        if (!AuthManager.isAdmin()) {
+            window.location.href = '../user/login_page.html';
+        }
+        
+        // Setup logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            AuthManager.logout();
+            window.location.href = '../user/index.html';
+        });
+        
+        feather.replace();
+    </script>
+</body>
+</html>

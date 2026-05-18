@@ -1,0 +1,53 @@
+{
+  "success": true,
+  "services": [
+    {
+      "id": 1,
+      "name": "Custom Tattoo Design",
+      "description": "Personalized tattoo design session with our expert artists",
+      "price": 200.00,
+      "duration": "2 hours",
+      "image": "../assets/uploads/site-images/tattoo-service.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Small Tattoo (Under 2 inches)",
+      "description": "Small tattoo placement - perfect for your first piece",
+      "price": 150.00,
+      "duration": "30-45 minutes",
+      "image": "../assets/uploads/site-images/small-tattoo.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Medium Tattoo (2-4 inches)",
+      "description": "Medium-sized tattoo with more detail and coverage",
+      "price": 300.00,
+      "duration": "1-2 hours",
+      "image": "../assets/uploads/site-images/medium-tattoo.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Large Tattoo (4+ inches)",
+      "description": "Large detailed tattoo piece with extensive artwork",
+      "price": 500.00,
+      "duration": "2-4 hours",
+      "image": "../assets/uploads/site-images/large-tattoo.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Sleeve Design",
+      "description": "Full sleeve tattoo design spanning entire arm",
+      "price": 1500.00,
+      "duration": "Multiple sessions",
+      "image": "../assets/uploads/site-images/sleeve-tattoo.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Piercing Service",
+      "description": "Professional piercing with sterile equipment",
+      "price": 100.00,
+      "duration": "30 minutes",
+      "image": "../assets/uploads/site-images/piercing.jpg"
+    }
+  ]
+}

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Title - Illuminated By Artistry</title>
+    
+    <!-- Styles and Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#FFFFFF',
+                        'light-text': '#1f2937',
+                        'dark-bg': '#111827',
+                        'dark-text': '#f9fafb',
+                        'dark-card': '#1f2937',
+                    },
+                    fontFamily: {
+                        'playfair': ['"Playfair Display"', 'serif'],
+                        'raleway': ['Raleway', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-white dark:bg-dark-bg text-gray-900 dark:text-dark-text">
+    
+    <!-- Header Navigation -->
+    <nav class="bg-white dark:bg-dark-bg sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <img src="../assets/Logo/Logo.jpg" alt="Logo" class="h-12">
+                    <span class="heading-font text-2xl text-gold">Illuminated By Artistry</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-gold transition">Home</a>
+                    <a href="gallery_page.html" class="hover:text-gold transition">Gallery</a>
+                    <a href="products_page.html" class="hover:text-gold transition">Shop</a>
+                    <a href="services_page.html" class="hover:text-gold transition">Services</a>
+                    <a href="about.html" class="hover:text-gold transition">About</a>
+                    <a href="contact.html" class="hover:text-gold transition">Contact</a>
+                </div>
+                <div class="flex space-x-4">
+                    <button id="theme-toggle" class="p-2" title="Toggle dark/light mode"><i data-feather="moon"></i></button>
+                    <a href="cart.html" class="p-2" title="View cart"><i data-feather="shopping-cart"></i></a>
+                    <a href="account_page.html" class="p-2" title="Account"><i data-feather="user"></i></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-16">
+
+
+    
+        <h1 class="text-4xl md:text-5xl font-bold text-center heading-font mb-12">My Orders</h1>
+        
+        <!-- Cancellation Disclaimer -->
+        <div class="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 mb-8 rounded">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i data-feather="info" class="h-5 w-5 text-yellow-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-yellow-700 dark:text-yellow-300">
+                        <strong>Order Cancellation Policy:</strong> You can cancel your order at any time while it is in <strong>pending</strong> status. Once your order has been processed and moved to processing, shipped, or delivered status, it can no longer be cancelled.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-lg">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Order ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Items</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Total</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-table-body" class="bg-light-card dark:bg-dark-card divide-y divide-gray-200 dark:divide-gray-800">
+                        <!-- Orders will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+
+    <!-- Order Details Modal -->
+    <div id="order-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity" onclick="closeOrderModal()"></div>
+            
+            <!-- Modal panel -->
+            <div class="inline-block align-bottom bg-light-card dark:bg-dark-card rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+                <div class="bg-light-card dark:bg-dark-card px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl heading-font font-bold" id="modal-title">Order Details</h3>
+                        <button onclick="closeOrderModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                            <i data-feather="x" class="h-6 w-6"></i>
+                        </button>
+                    </div>
+                    <div id="order-details-content">
+                        <!-- Order details will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Confirmation Modal -->
+    <div id="cancel-confirmation-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="cancel-modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity" onclick="closeCancelConfirmation()"></div>
+            
+            <!-- Modal panel -->
+            <div class="inline-block align-bottom bg-light-card dark:bg-dark-card rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-light-card dark:bg-dark-card px-4 pt-5 pb-4 sm:p-6">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30 sm:mx-0 sm:h-10 sm:w-10">
+                            <i data-feather="alert-triangle" class="h-6 w-6 text-red-600 dark:text-red-400"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium" id="cancel-modal-title">
+                                Cancel Order
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Are you sure you want to cancel this order? This action cannot be undone.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                        <button type="button" id="confirm-cancel-btn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Yes, Cancel Order
+                        </button>
+                        <button type="button" onclick="closeCancelConfirmation()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                            No, Keep Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/orders.js"></script>
+    <script src="../assets/js/main.js"></script>
+
+</main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 dark:bg-black py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="heading-font text-2xl mb-4 text-gold">Illuminated By Artistry</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Premium tattoo studio dedicated to creating meaningful, high-quality body art.</p>
+                </div>
+                <div>
+                    <h4 class="heading-font text-xl mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-600 dark:text-gray-400 hover:text-gold transition">Artists</a></li>
+                        <li><a href="gallery_page.html" class="text-gray-600 dark:text-gray-400 hover:text-gold transition">Gallery</a></li>
+                        <li><a href="contact.html" class="text-gray-600 dark:text-gray-400 hover:text-gold transition">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="heading-font text-xl mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-600 dark:text-gray-400">
+                        <li class="flex items-center"><i data-feather="map-pin" class="mr-2 text-gold"></i>Allen's Nek, Roodepoort, Gauteng</li>
+                        <li class="flex items-center"><i data-feather="phone" class="mr-2 text-gold"></i>+27 68 042 4933</li>
+                        <li class="flex items-center"><i data-feather="mail" class="mr-2 text-gold"></i>illuminatedbyartistry@gmail.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="heading-font text-xl mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/illuminated_by_artistry?igsh=MXRsa3lmczFkNjI1bg==" class="text-gray-600 dark:text-gray-400 hover:text-gold transition" title="Instagram"><i data-feather="instagram"></i></a>
+                        <a href="https://www.facebook.com/share/16SEHkUjyS/" class="text-gray-600 dark:text-gray-400 hover:text-gold transition" title="Facebook"><i data-feather="facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-300 dark:border-gray-700 pt-8">
+                <p class="text-center text-gray-600 dark:text-gray-400">&copy; 2024 Illuminated By Artistry. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="../assets/js/setup.js"></script>
+    <script src="../assets/js/theme.js"></script>
+    <script>
+        // Initialize AOS for animations
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+        
+        // Initialize feather icons
+        feather.replace();
+        
+        // Setup theme toggle
+        DOMUtils.setupThemeToggle('theme-toggle');
+    </script>
+</body>
+</html>

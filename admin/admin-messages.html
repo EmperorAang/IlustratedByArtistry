@@ -1,0 +1,448 @@
+<!-- 
+ADMIN PAGE TEMPLATE
+Use this template for all admin pages in the admin/ folder
+Admin pages are protected with client-side authentication check
+-->
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Illuminated By Artistry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#f9fafb',
+                        'dark-bg': '#111827',
+                        'dark-card': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-white">
+    
+    <!-- Admin Sidebar -->
+    <div class="relative min-h-screen lg:flex">
+        <aside class="w-64 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:h-screen">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-800">
+                <h1 class="heading-font text-2xl text-gold">Admin Panel</h1>
+            </div>
+            
+            <nav class="p-6 space-y-2">
+                <a href="admin-dashboard.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Dashboard</a>
+                <a href="admin-artists.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Artists</a>
+                <a href="admin-products.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Products</a>
+                <a href="admin-services.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Services</a>
+                <a href="admin-orders.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Orders</a>
+                <a href="admin-gallery-management.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Gallery</a>
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+                    <button id="logout-btn" class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900 text-red-600" title="Logout">Logout</button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            
+
+<main class="flex-1 p-6 overflow-auto">
+    <div class="w-full">
+        <h1 class="text-2xl font-bold heading-font mb-6">Contact Messages</h1>
+
+        <!-- New/Unread Messages Section -->
+        <div class="bg-light-card dark:bg-dark-card shadow-md rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold heading-font mb-4 flex items-center">
+                <i data-feather="mail" class="w-5 h-5 mr-2 text-gold"></i>
+                New Messages
+                <span id="new-count" class="ml-2 bg-gold text-black text-xs font-bold px-2 py-1 rounded-full">0</span>
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">Received</th>
+                            <th scope="col" class="px-6 py-3">Name</th>
+                            <th scope="col" class="px-6 py-3">Email</th>
+                            <th scope="col" class="px-6 py-3">Phone</th>
+                            <th scope="col" class="px-6 py-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="new-messages-tbody">
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Read Messages Section -->
+        <div class="bg-light-card dark:bg-dark-card shadow-md rounded-lg p-6">
+            <h2 class="text-xl font-semibold heading-font mb-4 flex items-center">
+                <i data-feather="check-circle" class="w-5 h-5 mr-2 text-green-500"></i>
+                Read Messages
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">Received</th>
+                            <th scope="col" class="px-6 py-3">Name</th>
+                            <th scope="col" class="px-6 py-3">Email</th>
+                            <th scope="col" class="px-6 py-3">Phone</th>
+                            <th scope="col" class="px-6 py-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="read-messages-tbody">
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for viewing message -->
+    <div id="message-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 shadow-lg rounded-md bg-light-card dark:bg-dark-card">
+            <div class="mt-3">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg leading-6 font-medium heading-font" id="modal-title">Message Details</h3>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200">
+                        <i data-feather="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <div class="px-7 py-3">
+                    <div class="mb-4">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">From:</p>
+                        <p class="font-semibold" id="modal-name"></p>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Email:</p>
+                        <p id="modal-email"></p>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Phone:</p>
+                        <p id="modal-phone"></p>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Message:</p>
+                        <p class="text-sm whitespace-pre-wrap" id="modal-message"></p>
+                    </div>
+                </div>
+                <div class="flex justify-between px-4 py-3">
+                    <button id="mark-read-btn" onclick="markAsRead()" class="px-4 py-2 bg-gold text-black font-medium rounded-md hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold">
+                        Mark as Read
+                    </button>
+                    <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-base font-medium rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    const API_URL = 'api/messages.html';
+    let currentMessageId = null;
+    let currentMessageIsRead = null;
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + 
+               ', ' + date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    };
+
+    const createMessageRow = (message, isNewSection) => {
+        const whatsappLink = message.phone ? 
+            `<a href="https://wa.me/${message.phone.replace(/[^0-9]/g, '')}" target="_blank" class="text-green-600 dark:text-green-500 hover:underline flex items-center">
+                <i data-feather="message-square" class="w-4 h-4 mr-1"></i>
+                ${message.phone}
+            </a>` : 'N/A';
+
+        const actionButton = isNewSection ? 
+            `<button onclick="openModal(${message.id}, '${message.name.replace(/'/g, "\\'")}', '${message.email}', '${message.phone || ''}', \`${message.message.replace(/`/g, '\\`')}\`, ${message.is_read})" class="text-blue-600 dark:text-blue-500 hover:underline mr-2">View</button>
+             <button onclick="markMessageAsRead(${message.id})" class="text-gold hover:text-yellow-400" title="Mark as read">
+                <i data-feather="check" class="w-4 h-4"></i>
+             </button>` :
+            `<button onclick="openModal(${message.id}, '${message.name.replace(/'/g, "\\'")}', '${message.email}', '${message.phone || ''}', \`${message.message.replace(/`/g, '\\`')}\`, ${message.is_read})" class="text-blue-600 dark:text-blue-500 hover:underline">View</button>`;
+
+        return `
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" data-message-id="${message.id}">
+                <td class="px-6 py-4">${formatDate(message.created_at)}</td>
+                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">${message.name}</td>
+                <td class="px-6 py-4">
+                    <a href="mailto:${message.email}" class="text-blue-600 dark:text-blue-500 hover:underline">${message.email}</a>
+                </td>
+                <td class="px-6 py-4">${whatsappLink}</td>
+                <td class="px-6 py-4">${actionButton}</td>
+            </tr>
+        `;
+    };
+
+    const loadMessages = async () => {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error('Failed to load messages');
+            
+            const messages = await response.json();
+            
+            const newMessages = messages.filter(m => m.is_read == 0);
+            const readMessages = messages.filter(m => m.is_read == 1);
+
+            // Update new messages count
+            document.getElementById('new-count').textContent = newMessages.length;
+
+            // Render new messages
+            const newTbody = document.getElementById('new-messages-tbody');
+            if (newMessages.length === 0) {
+                newTbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No new messages</td></tr>';
+            } else {
+                newTbody.innerHTML = newMessages.map(m => createMessageRow(m, true)).join('');
+            }
+
+            // Render read messages
+            const readTbody = document.getElementById('read-messages-tbody');
+            if (readMessages.length === 0) {
+                readTbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No read messages</td></tr>';
+            } else {
+                readTbody.innerHTML = readMessages.map(m => createMessageRow(m, false)).join('');
+            }
+
+            feather.replace();
+        } catch (error) {
+            console.error('Error loading messages:', error);
+            document.getElementById('new-messages-tbody').innerHTML = 
+                '<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Error loading messages</td></tr>';
+        }
+    };
+
+    const openModal = (id, name, email, phone, message, isRead) => {
+        currentMessageId = id;
+        currentMessageIsRead = isRead;
+        
+        document.getElementById('modal-title').textContent = `Message from ${name}`;
+        document.getElementById('modal-name').textContent = name;
+        document.getElementById('modal-email').textContent = email;
+        document.getElementById('modal-phone').textContent = phone || 'N/A';
+        document.getElementById('modal-message').textContent = message;
+        
+        // Show/hide mark as read button based on current status
+        const markReadBtn = document.getElementById('mark-read-btn');
+        if (isRead == 1) {
+            markReadBtn.style.display = 'none';
+        } else {
+            markReadBtn.style.display = 'block';
+        }
+
+        document.getElementById('message-modal').classList.remove('hidden');
+    };
+
+    const closeModal = () => {
+        document.getElementById('message-modal').classList.add('hidden');
+        currentMessageId = null;
+        currentMessageIsRead = null;
+    };
+
+    const markAsRead = async () => {
+        if (!currentMessageId) return;
+        await markMessageAsRead(currentMessageId);
+        closeModal();
+    };
+
+    const markMessageAsRead = async (id) => {
+        try {
+            const response = await fetch(API_URL, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, is_read: 1 })
+            });
+
+            if (!response.ok) throw new Error('Failed to mark message as read');
+
+            await loadMessages();
+        } catch (error) {
+            console.error('Error marking message as read:', error);
+            alert('Failed to mark message as read. Please try again.');
+        }
+    };
+
+    // Load messages on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        loadMessages();
+        // Refresh every 30 seconds
+        setInterval(loadMessages, 30000);
+    });
+</script>
+
+<script>
+    const API_URL = 'api/messages.php';
+    let currentMessageId = null;
+    let currentMessageIsRead = null;
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + 
+               ', ' + date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    };
+
+    const createMessageRow = (message, isNewSection) => {
+        const whatsappLink = message.phone ? 
+            `<a href="https://wa.me/${message.phone.replace(/[^0-9]/g, '')}" target="_blank" class="text-green-600 dark:text-green-500 hover:underline flex items-center">
+                <i data-feather="message-square" class="w-4 h-4 mr-1"></i>
+                ${message.phone}
+            </a>` : 'N/A';
+
+        const actionButton = isNewSection ? 
+            `<button onclick="openModal(${message.id}, '${message.name.replace(/'/g, "\\'")}', '${message.email}', '${message.phone || ''}', \`${message.message.replace(/`/g, '\\`')}\`, ${message.is_read})" class="text-blue-600 dark:text-blue-500 hover:underline mr-2">View</button>
+             <button onclick="markMessageAsRead(${message.id})" class="text-gold hover:text-yellow-400" title="Mark as read">
+                <i data-feather="check" class="w-4 h-4"></i>
+             </button>` :
+            `<button onclick="openModal(${message.id}, '${message.name.replace(/'/g, "\\'")}', '${message.email}', '${message.phone || ''}', \`${message.message.replace(/`/g, '\\`')}\`, ${message.is_read})" class="text-blue-600 dark:text-blue-500 hover:underline">View</button>`;
+
+        return `
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" data-message-id="${message.id}">
+                <td class="px-6 py-4">${formatDate(message.created_at)}</td>
+                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">${message.name}</td>
+                <td class="px-6 py-4">
+                    <a href="mailto:${message.email}" class="text-blue-600 dark:text-blue-500 hover:underline">${message.email}</a>
+                </td>
+                <td class="px-6 py-4">${whatsappLink}</td>
+                <td class="px-6 py-4">${actionButton}</td>
+            </tr>
+        `;
+    };
+
+    const loadMessages = async () => {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error('Failed to load messages');
+            
+            const messages = await response.json();
+            
+            const newMessages = messages.filter(m => m.is_read == 0);
+            const readMessages = messages.filter(m => m.is_read == 1);
+
+            // Update new messages count
+            document.getElementById('new-count').textContent = newMessages.length;
+
+            // Render new messages
+            const newTbody = document.getElementById('new-messages-tbody');
+            if (newMessages.length === 0) {
+                newTbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No new messages</td></tr>';
+            } else {
+                newTbody.innerHTML = newMessages.map(m => createMessageRow(m, true)).join('');
+            }
+
+            // Render read messages
+            const readTbody = document.getElementById('read-messages-tbody');
+            if (readMessages.length === 0) {
+                readTbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No read messages</td></tr>';
+            } else {
+                readTbody.innerHTML = readMessages.map(m => createMessageRow(m, false)).join('');
+            }
+
+            feather.replace();
+        } catch (error) {
+            console.error('Error loading messages:', error);
+            document.getElementById('new-messages-tbody').innerHTML = 
+                '<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Error loading messages</td></tr>';
+        }
+    };
+
+    const openModal = (id, name, email, phone, message, isRead) => {
+        currentMessageId = id;
+        currentMessageIsRead = isRead;
+        
+        document.getElementById('modal-title').textContent = `Message from ${name}`;
+        document.getElementById('modal-name').textContent = name;
+        document.getElementById('modal-email').textContent = email;
+        document.getElementById('modal-phone').textContent = phone || 'N/A';
+        document.getElementById('modal-message').textContent = message;
+        
+        // Show/hide mark as read button based on current status
+        const markReadBtn = document.getElementById('mark-read-btn');
+        if (isRead == 1) {
+            markReadBtn.style.display = 'none';
+        } else {
+            markReadBtn.style.display = 'block';
+        }
+
+        document.getElementById('message-modal').classList.remove('hidden');
+    };
+
+    const closeModal = () => {
+        document.getElementById('message-modal').classList.add('hidden');
+        currentMessageId = null;
+        currentMessageIsRead = null;
+    };
+
+    const markAsRead = async () => {
+        if (!currentMessageId) return;
+        await markMessageAsRead(currentMessageId);
+        closeModal();
+    };
+
+    const markMessageAsRead = async (id) => {
+        try {
+            const response = await fetch(API_URL, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, is_read: 1 })
+            });
+
+            if (!response.ok) throw new Error('Failed to mark message as read');
+
+            await loadMessages();
+        } catch (error) {
+            console.error('Error marking message as read:', error);
+            alert('Failed to mark message as read. Please try again.');
+        }
+    };
+
+    // Load messages on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        loadMessages();
+        // Refresh every 30 seconds
+        setInterval(loadMessages, 30000);
+    });
+</script>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/setup.js"></script>
+    <script>
+        // Check if user is admin, redirect if not
+        if (!AuthManager.isAdmin()) {
+            window.location.href = '../user/login_page.html';
+        }
+        
+        // Setup logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            AuthManager.logout();
+            window.location.href = '../user/index.html';
+        });
+        
+        feather.replace();
+    </script>
+</body>
+</html>

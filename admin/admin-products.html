@@ -1,0 +1,419 @@
+<!-- 
+ADMIN PAGE TEMPLATE
+Use this template for all admin pages in the admin/ folder
+Admin pages are protected with client-side authentication check
+-->
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Illuminated By Artistry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#f9fafb',
+                        'dark-bg': '#111827',
+                        'dark-card': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-white">
+    
+    <!-- Admin Sidebar -->
+    <div class="relative min-h-screen lg:flex">
+        <aside class="w-64 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:h-screen">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-800">
+                <h1 class="heading-font text-2xl text-gold">Admin Panel</h1>
+            </div>
+            
+            <nav class="p-6 space-y-2">
+                <a href="admin-dashboard.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Dashboard</a>
+                <a href="admin-artists.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Artists</a>
+                <a href="admin-products.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Products</a>
+                <a href="admin-services.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Services</a>
+                <a href="admin-orders.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Orders</a>
+                <a href="admin-gallery-management.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Gallery</a>
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+                    <button id="logout-btn" class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900 text-red-600" title="Logout">Logout</button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            
+
+            <main class="p-6 flex-1 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-semibold heading-font">Products</h3>
+                </div>
+
+                <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h4 class="text-xl font-semibold heading-font" id="product-list-title">Available Products</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400" id="product-list-subtitle">Products currently visible to customers.</p>
+                        </div>
+                        <div>
+                            <button class="text-gold hover:opacity-80 text-sm font-semibold flex items-center mr-4" id="toggle-archived-btn" data-showing="available">
+                                <i data-feather="archive" class="w-4 h-4 mr-1"></i>View Archived
+                            </button>
+                            <button class="text-gold hover:opacity-80 text-sm font-semibold flex items-center" id="add-product-btn">
+                                <i data-feather="plus" class="w-4 h-4 mr-1"></i>Add Product
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" id="product-table">
+                            <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Product</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Price</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Stock</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-light-card dark:bg-dark-card divide-y divide-gray-200 dark:divide-gray-800">
+                                <!-- Product Items will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="product-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 hidden">
+        <div class="bg-light-card dark:bg-dark-card p-8 rounded-lg shadow-2xl w-full max-w-lg transform transition-all">
+            <div class="flex justify-between items-center mb-6">
+                <h4 id="modal-title" class="text-2xl font-bold heading-font">Add Product</h4>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200">&times;</button>
+            </div>
+            <form id="product-form" enctype="multipart/form-data">
+                <input type="hidden" id="product-id" name="id">
+                <div class="space-y-4">
+                    <div>
+                        <label for="product-name" class="block text-sm font-medium mb-1">Product Name</label>
+                        <input type="text" id="product-name" name="name" required class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gold">
+                    </div>
+                    <div>
+                        <label for="product-description" class="block text-sm font-medium mb-1">Description</label>
+                        <textarea id="product-description" name="description" rows="3" required class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gold"></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="product-price" class="block text-sm font-medium mb-1">Price (ZAR)</label>
+                            <input type="number" id="product-price" name="price" step="0.01" required class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gold">
+                        </div>
+                        <div>
+                            <label for="product-stock" class="block text-sm font-medium mb-1">Stock Quantity</label>
+                            <input type="number" id="product-stock" name="stock" required class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gold">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="product-image" class="block text-sm font-medium mb-1">Product Image</label>
+                        <input type="file" id="product-image" name="image" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gold file:text-black hover:file:bg-yellow-400">
+                        <img id="image-preview" class="mt-4 rounded-lg hidden w-32 h-32 object-cover" src="#" alt="Image Preview" />
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-end">
+                    <button type="button" id="cancel-button" class="bg-gray-300 dark:bg-gray-700 text-light-text dark:text-dark-text font-bold py-2 px-4 rounded-md hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors duration-200 mr-2">Cancel</button>
+                    <button type="submit" class="bg-gold text-black font-bold py-2 px-4 rounded-md hover:opacity-90 transition-opacity duration-200">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Page-Specific CRUD Script for Products ---
+            const API_URL = 'api/products.php';
+            const productTableBody = document.querySelector('#product-table tbody');
+            const productTableHead = document.querySelector('#product-table thead');
+            const addProductBtn = document.getElementById('add-product-btn');
+            const modal = document.getElementById('product-modal');
+            const closeModalBtn = document.getElementById('close-modal');
+            const cancelButton = document.getElementById('cancel-button');
+            const productForm = document.getElementById('product-form');
+            const modalTitle = document.getElementById('modal-title');
+            const productIdInput = document.getElementById('product-id');
+            const imageInput = document.getElementById('product-image');
+            const imagePreview = document.getElementById('image-preview');
+            const toggleBtn = document.getElementById('toggle-archived-btn');
+            const listTitle = document.getElementById('product-list-title');
+            const listSubtitle = document.getElementById('product-list-subtitle');
+
+            let showingArchived = false;
+
+            const formatCurrency = (amount) => new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(amount);
+
+            const createActiveTableRow = (product) => `
+                <tr data-id="${product.id}">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <img class="h-10 w-10 rounded-md object-cover" src="${product.image_url}" alt="${product.name}">
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium">${product.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">${product.description.substring(0, 40)}...</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">${formatCurrency(product.price)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center">${product.stock_quantity}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-gray-400 hover:text-gold p-2 edit-btn"><i data-feather="edit-2" class="w-5 h-5"></i></button>
+                        <button class="text-gray-400 hover:text-red-500 p-2 delete-btn"><i data-feather="archive" class="w-5 h-5"></i></button>
+                    </td>
+                </tr>
+            `;
+            
+            const createArchivedTableRow = (product) => `
+                <tr data-id="${product.id}">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <img class="h-10 w-10 rounded-md object-cover opacity-50" src="${product.image_url}" alt="${product.name}">
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-500">${product.name}</div>
+                                <div class="text-xs text-red-500">Archived</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.description.substring(0, 40)}...</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-500">${formatCurrency(product.price)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">${product.stock_quantity}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-gray-400 hover:text-green-500 p-2 restore-btn"><i data-feather="refresh-cw" class="w-5 h-5"></i></button>
+                    </td>
+                </tr>
+            `;
+
+            const loadProducts = async (archived = false) => {
+                try {
+                    const url = archived ? `${API_URL}?archived=true` : API_URL;
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    
+                    const products = await response.json();
+                    if (!Array.isArray(products)) {
+                        console.error('API did not return an array:', products);
+                        productTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4">Error: Invalid data format.</td></tr>`;
+                        return;
+                    }
+
+                    const rowCreator = archived ? createArchivedTableRow : createActiveTableRow;
+                    productTableBody.innerHTML = products.map(rowCreator).join('');
+                    feather.replace();
+                } catch (error) {
+                    console.error(`Error loading ${archived ? 'archived' : 'active'} products:`, error);
+                    productTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4">Error loading products.</td></tr>`;
+                }
+            };
+
+            const updateUIForView = (isArchivedView) => {
+                showingArchived = isArchivedView;
+                if (isArchivedView) {
+                    listTitle.textContent = 'Archived Products';
+                    listSubtitle.textContent = 'Products that are hidden from customers.';
+                    toggleBtn.innerHTML = `<i data-feather="package" class="w-4 h-4 mr-1"></i>View Available`;
+                    addProductBtn.classList.add('hidden');
+                } else {
+                    listTitle.textContent = 'Available Products';
+                    listSubtitle.textContent = 'Products currently visible to customers.';
+                    toggleBtn.innerHTML = `<i data-feather="archive" class="w-4 h-4 mr-1"></i>View Archived`;
+                    addProductBtn.classList.remove('hidden');
+                }
+                feather.replace();
+                loadProducts(isArchivedView);
+            };
+
+            const openModal = (product = null) => {
+                productForm.reset();
+                imagePreview.classList.add('hidden');
+                if (product) {
+                    modalTitle.textContent = 'Edit Product';
+                    productIdInput.value = product.id;
+                    document.getElementById('product-name').value = product.name;
+                    document.getElementById('product-description').value = product.description;
+                    document.getElementById('product-price').value = product.price;
+                    document.getElementById('product-stock').value = product.stock_quantity;
+                    
+                    if (product.image_url) {
+                        imagePreview.src = product.image_url;
+                        imagePreview.classList.remove('hidden');
+                    }
+                } else {
+                    modalTitle.textContent = 'Add Product';
+                    productIdInput.value = '';
+                }
+                modal.classList.remove('hidden');
+            };
+
+            const closeModal = () => {
+                modal.classList.add('hidden');
+            };
+
+            const handleFormSubmit = async (e) => {
+                e.preventDefault();
+                const formData = new FormData(productForm);
+                const id = formData.get('id');
+                
+                if (id) {
+                    formData.append('_method', 'PUT');
+                }
+                
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Server responded with ${response.status}: ${errorText}`);
+                    }
+                    
+                    const result = await response.json();
+                    if (result.error) throw new Error(result.error);
+                    
+                    closeModal();
+                    loadProducts(showingArchived);
+                } catch (error) {
+                    console.error('Error saving product:', error);
+                    alert(`Failed to save product. ${error.message}`);
+                }
+            };
+
+            const handleTableClick = async (e) => {
+                const target = e.target.closest('button');
+                if (!target) return;
+
+                const row = target.closest('tr');
+                const id = row.dataset.id;
+
+                if (target.classList.contains('edit-btn')) {
+                    try {
+                        // Fetch only the specific product to edit
+                        const response = await fetch(`${API_URL}?id=${id}`);
+                        const product = await response.json();
+                        if (product) {
+                            openModal(product);
+                        } else {
+                            alert('Product not found');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching product for edit:', error);
+                    }
+                }
+
+                if (target.classList.contains('delete-btn')) {
+                    if (confirm('Are you sure you want to archive this product? This will hide it from the store and cancel any pending orders for it.')) {
+                        try {
+                            const response = await fetch(API_URL, { 
+                                method: 'DELETE',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: parseInt(id) })
+                            });
+                            
+                            const result = await response.json();
+                            if (!response.ok || result.error) throw new Error(result.error || `HTTP ${response.status}`);
+                            
+                            alert(result.message || 'Product archived successfully!');
+                            loadProducts(false); // Refresh the active list
+                        } catch (error) {
+                            console.error('Error archiving product:', error);
+                            alert('Failed to archive product: ' + error.message);
+                        }
+                    }
+                }
+
+                if (target.classList.contains('restore-btn')) {
+                    if (confirm('Are you sure you want to restore this product? It will become visible in the store again.')) {
+                        try {
+                            const response = await fetch(API_URL, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: parseInt(id), action: 'restore' })
+                            });
+                            const result = await response.json();
+                            if (!response.ok || result.error) throw new Error(result.error || 'Failed to restore');
+                            
+                            alert('Product restored successfully!');
+                            loadProducts(true); // Refresh the archived list
+                        } catch (error) {
+                            console.error('Error restoring product:', error);
+                            alert('Failed to restore product: ' + error.message);
+                        }
+                    }
+                }
+            };
+
+            // Image preview on file select
+            imageInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Event Listeners
+            addProductBtn.addEventListener('click', () => openModal());
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelButton.addEventListener('click', closeModal);
+            productForm.addEventListener('submit', handleFormSubmit);
+            productTableBody.addEventListener('click', handleTableClick);
+            toggleBtn.addEventListener('click', () => updateUIForView(!showingArchived));
+
+            // Initial Load
+            updateUIForView(false);
+        });
+    </script>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/setup.js"></script>
+    <script>
+        // Check if user is admin, redirect if not
+        if (!AuthManager.isAdmin()) {
+            window.location.href = '../user/login_page.html';
+        }
+        
+        // Setup logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            AuthManager.logout();
+            window.location.href = '../user/index.html';
+        });
+        
+        feather.replace();
+    </script>
+</body>
+</html>

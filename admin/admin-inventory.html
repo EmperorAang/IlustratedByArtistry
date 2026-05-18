@@ -1,0 +1,385 @@
+<!-- 
+ADMIN PAGE TEMPLATE
+Use this template for all admin pages in the admin/ folder
+Admin pages are protected with client-side authentication check
+-->
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Illuminated By Artistry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#f9fafb',
+                        'dark-bg': '#111827',
+                        'dark-card': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-white">
+    
+    <!-- Admin Sidebar -->
+    <div class="relative min-h-screen lg:flex">
+        <aside class="w-64 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:h-screen">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-800">
+                <h1 class="heading-font text-2xl text-gold">Admin Panel</h1>
+            </div>
+            
+            <nav class="p-6 space-y-2">
+                <a href="admin-dashboard.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Dashboard</a>
+                <a href="admin-artists.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Artists</a>
+                <a href="admin-products.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Products</a>
+                <a href="admin-services.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Services</a>
+                <a href="admin-orders.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Orders</a>
+                <a href="admin-gallery-management.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Gallery</a>
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+                    <button id="logout-btn" class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900 text-red-600" title="Logout">Logout</button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            
+
+<div class="p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold heading-font">Inventory Management</h1>
+        <div class="flex items-center space-x-4">
+            <button id="view-low-stock-btn" class="bg-red-600 text-white font-bold py-2 px-4 rounded-md hover:bg-red-700 transition-all">
+                <i data-feather="alert-triangle" class="inline w-4 h-4 mr-2"></i>
+                Low Stock Alert (<span id="low-stock-count">0</span>)
+            </button>
+            <button id="refresh-btn" class="bg-gold text-black font-bold py-2 px-4 rounded-md hover:bg-opacity-90 transition-all">
+                <i data-feather="refresh-cw" class="inline w-4 h-4"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Low Stock Alert Banner -->
+    <div id="low-stock-banner" class="hidden mb-6 bg-red-100 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded-md">
+        <div class="flex items-center">
+            <i data-feather="alert-triangle" class="text-red-600 dark:text-red-400 w-6 h-6 mr-3"></i>
+            <div>
+                <h3 class="font-bold text-red-800 dark:text-red-300">Low Stock Warning</h3>
+                <p class="text-sm text-red-700 dark:text-red-400">Some products are running low on stock. Please restock soon to avoid running out.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="text-center py-16">
+        <div role="status">
+            <svg aria-hidden="true" class="inline w-10 h-10 text-gray-200 animate-spin dark:text-gray-600 fill-gold" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+            </svg>
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Inventory Table -->
+    <div id="inventory-content" class="hidden bg-light-card dark:bg-dark-card rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-800/50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Product</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Image</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Current Stock</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Low Stock Alert</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inventory-tbody" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <!-- Rows will be injected here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Stock Modal -->
+<div id="edit-stock-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+    <div class="bg-light-card dark:bg-dark-card p-8 rounded-lg shadow-2xl w-full max-w-md transform transition-all">
+        <div class="flex justify-between items-center mb-6">
+            <h4 class="text-2xl font-bold heading-font">Update Stock</h4>
+            <button id="close-modal-btn" class="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 text-3xl">&times;</button>
+        </div>
+        <form id="edit-stock-form">
+            <input type="hidden" id="edit-product-id" name="product_id">
+            <div id="form-response" class="mb-4"></div>
+            <div class="mb-4">
+                <h5 id="edit-product-name" class="text-lg font-semibold mb-2"></h5>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="edit-stock-quantity" class="block text-sm font-medium mb-1">Current Stock Quantity</label>
+                    <input type="number" id="edit-stock-quantity" name="stock_quantity" min="0" class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gold" required>
+                </div>
+                <div>
+                    <label for="edit-low-stock" class="block text-sm font-medium mb-1">Low Stock Threshold</label>
+                    <input type="number" id="edit-low-stock" name="low_stock_threshold" min="0" class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gold" required>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">You'll be alerted when stock falls to or below this level</p>
+                </div>
+            </div>
+            <div class="mt-6 text-right">
+                <button type="submit" id="save-stock-btn" class="bg-gold text-black font-bold py-2 px-6 rounded-md hover:bg-opacity-90 transition-all">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Low Stock Details Modal -->
+<div id="low-stock-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+    <div class="bg-light-card dark:bg-dark-card p-8 rounded-lg shadow-2xl w-full max-w-2xl transform transition-all max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h4 class="text-2xl font-bold heading-font">Low Stock Products</h4>
+            <button id="close-low-stock-modal-btn" class="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 text-3xl">&times;</button>
+        </div>
+        <div id="low-stock-list" class="space-y-4">
+            <!-- Low stock products will be listed here -->
+        </div>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const inventoryContent = document.getElementById('inventory-content');
+    const inventoryTbody = document.getElementById('inventory-tbody');
+    const editStockModal = document.getElementById('edit-stock-modal');
+    const editStockForm = document.getElementById('edit-stock-form');
+    const lowStockModal = document.getElementById('low-stock-modal');
+    const lowStockBanner = document.getElementById('low-stock-banner');
+    const lowStockCountEl = document.getElementById('low-stock-count');
+
+    const formatCurrency = (amount) => new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(amount);
+
+    const getStatusBadge = (status, stockQty) => {
+        if (status === 'out_of_stock') {
+            return '<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300">Out of Stock</span>';
+        } else if (status === 'low_stock') {
+            return '<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300">Low Stock</span>';
+        } else {
+            return '<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300">In Stock</span>';
+        }
+    };
+
+    const loadInventory = async () => {
+        loadingSpinner.style.display = 'block';
+        inventoryContent.style.display = 'none';
+
+        try {
+            const response = await fetch('api/inventory.php');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            
+            if (!data.success) throw new Error(data.error || 'Failed to load inventory');
+            
+            renderInventory(data.products);
+            
+            // Check for low stock and update counter
+            const lowStockProducts = data.products.filter(p => p.stock_status === 'low_stock' || p.stock_status === 'out_of_stock');
+            lowStockCountEl.textContent = lowStockProducts.length;
+            
+            if (lowStockProducts.length > 0) {
+                lowStockBanner.classList.remove('hidden');
+            } else {
+                lowStockBanner.classList.add('hidden');
+            }
+
+        } catch (error) {
+            console.error('Error loading inventory:', error);
+            inventoryTbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-red-500">Failed to load inventory: ${error.message}</td></tr>`;
+        } finally {
+            loadingSpinner.style.display = 'none';
+            inventoryContent.style.display = 'block';
+            feather.replace();
+        }
+    };
+
+    const renderInventory = (products) => {
+        if (products.length === 0) {
+            inventoryTbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">No products found</td></tr>';
+            return;
+        }
+
+        inventoryTbody.innerHTML = products.map(product => `
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 ${product.stock_status === 'out_of_stock' ? 'bg-red-50 dark:bg-red-900/10' : ''}">
+                <td class="px-6 py-4">
+                    <div class="text-sm font-medium">${product.name}</div>
+                    <div class="text-xs text-gray-500">${formatCurrency(product.price)}</div>
+                </td>
+                <td class="px-6 py-4">
+                    ${product.image_url ? `<img src="${product.image_url}" alt="${product.name}" class="w-16 h-16 object-cover rounded">` : '<div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-gray-400 text-xs">No Image</div>'}
+                </td>
+                <td class="px-6 py-4 text-center">
+                    <span class="text-2xl font-bold ${product.stock_quantity === 0 ? 'text-red-600' : product.stock_quantity <= product.low_stock_threshold ? 'text-yellow-600' : 'text-green-600'}">${product.stock_quantity}</span>
+                </td>
+                <td class="px-6 py-4 text-center">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">${product.low_stock_threshold}</span>
+                </td>
+                <td class="px-6 py-4 text-center">
+                    ${getStatusBadge(product.stock_status, product.stock_quantity)}
+                </td>
+                <td class="px-6 py-4 text-center">
+                    <button onclick="openEditModal(${product.id}, '${product.name.replace(/'/g, "\\'")}', ${product.stock_quantity}, ${product.low_stock_threshold})" class="text-gold hover:text-yellow-600 font-medium">
+                        <i data-feather="edit-2" class="inline w-4 h-4"></i> Edit
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+        
+        feather.replace();
+    };
+
+    window.openEditModal = (id, name, stockQty, lowStock) => {
+        document.getElementById('edit-product-id').value = id;
+        document.getElementById('edit-product-name').textContent = name;
+        document.getElementById('edit-stock-quantity').value = stockQty;
+        document.getElementById('edit-low-stock').value = lowStock;
+        document.getElementById('form-response').innerHTML = '';
+        editStockModal.classList.remove('hidden');
+    };
+
+    const closeEditModal = () => {
+        editStockModal.classList.add('hidden');
+        editStockForm.reset();
+    };
+
+    const handleEditSubmit = async (e) => {
+        e.preventDefault();
+        const submitBtn = document.getElementById('save-stock-btn');
+        const formResponse = document.getElementById('form-response');
+        
+        const productId = document.getElementById('edit-product-id').value;
+        const stockQuantity = parseInt(document.getElementById('edit-stock-quantity').value);
+        const lowStockThreshold = parseInt(document.getElementById('edit-low-stock').value);
+        
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+        formResponse.innerHTML = '';
+
+        try {
+            const response = await fetch('api/inventory.php', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    product_id: productId,
+                    stock_quantity: stockQuantity,
+                    low_stock_threshold: lowStockThreshold
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || 'Failed to update stock');
+            }
+
+            formResponse.innerHTML = `<div class="p-3 text-sm text-green-700 bg-green-100 rounded-lg">${result.message}</div>`;
+            setTimeout(() => {
+                closeEditModal();
+                loadInventory();
+            }, 1000);
+
+        } catch (error) {
+            formResponse.innerHTML = `<div class="p-3 text-sm text-red-700 bg-red-100 rounded-lg">Error: ${error.message}</div>`;
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Save Changes';
+        }
+    };
+
+    const loadLowStockProducts = async () => {
+        try {
+            const response = await fetch('api/inventory.php?action=low_stock');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            
+            if (!data.success) throw new Error(data.error || 'Failed to load low stock products');
+            
+            const lowStockList = document.getElementById('low-stock-list');
+            
+            if (data.products.length === 0) {
+                lowStockList.innerHTML = '<p class="text-center text-gray-500 py-8">No products with low stock. Great job!</p>';
+            } else {
+                lowStockList.innerHTML = data.products.map(product => `
+                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border ${product.stock_quantity === 0 ? 'border-red-500' : 'border-yellow-500'}">
+                        <div class="flex items-center space-x-4">
+                            ${product.image_url ? `<img src="${product.image_url}" alt="${product.name}" class="w-16 h-16 object-cover rounded">` : '<div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded"></div>'}
+                            <div>
+                                <h5 class="font-semibold">${product.name}</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Threshold: ${product.low_stock_threshold}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold ${product.stock_quantity === 0 ? 'text-red-600' : 'text-yellow-600'}">${product.stock_quantity}</div>
+                            <button onclick="openEditModal(${product.id}, '${product.name.replace(/'/g, "\\'")}', ${product.stock_quantity}, ${product.low_stock_threshold}); document.getElementById('low-stock-modal').classList.add('hidden');" class="text-gold hover:text-yellow-600 text-sm font-medium mt-2">
+                                Restock
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            lowStockModal.classList.remove('hidden');
+
+        } catch (error) {
+            console.error('Error loading low stock products:', error);
+        }
+    };
+
+    document.getElementById('close-modal-btn').addEventListener('click', closeEditModal);
+    document.getElementById('close-low-stock-modal-btn').addEventListener('click', () => {
+        lowStockModal.classList.add('hidden');
+    });
+    document.getElementById('view-low-stock-btn').addEventListener('click', loadLowStockProducts);
+    document.getElementById('refresh-btn').addEventListener('click', loadInventory);
+    editStockForm.addEventListener('submit', handleEditSubmit);
+
+    // Initial load
+    loadInventory();
+});
+</script>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/setup.js"></script>
+    <script>
+        // Check if user is admin, redirect if not
+        if (!AuthManager.isAdmin()) {
+            window.location.href = '../user/login_page.html';
+        }
+        
+        // Setup logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            AuthManager.logout();
+            window.location.href = '../user/index.html';
+        });
+        
+        feather.replace();
+    </script>
+</body>
+</html>

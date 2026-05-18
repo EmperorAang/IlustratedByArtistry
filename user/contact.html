@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Title - Illuminated By Artistry</title>
+    
+    <!-- Styles and Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#FFFFFF',
+                        'light-text': '#1f2937',
+                        'dark-bg': '#111827',
+                        'dark-text': '#f9fafb',
+                        'dark-card': '#1f2937',
+                    },
+                    fontFamily: {
+                        'playfair': ['"Playfair Display"', 'serif'],
+                        'raleway': ['Raleway', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-white dark:bg-dark-bg text-gray-900 dark:text-dark-text">
+    
+    <!-- Header Navigation -->
+    <nav class="bg-white dark:bg-dark-bg sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <img src="../assets/Logo/Logo.jpg" alt="Logo" class="h-12">
+                    <span class="heading-font text-2xl text-gold">Illuminated By Artistry</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-gold transition">Home</a>
+                    <a href="gallery_page.html" class="hover:text-gold transition">Gallery</a>
+                    <a href="products_page.html" class="hover:text-gold transition">Shop</a>
+                    <a href="services_page.html" class="hover:text-gold transition">Services</a>
+                    <a href="about.html" class="hover:text-gold transition">About</a>
+                    <a href="contact.html" class="hover:text-gold transition">Contact</a>
+                </div>
+                <div class="flex space-x-4">
+                    <button id="theme-toggle" class="p-2" title="Toggle dark/light mode"><i data-feather="moon"></i></button>
+                    <a href="cart.html" class="p-2" title="View cart"><i data-feather="shopping-cart"></i></a>
+                    <a href="account_page.html" class="p-2" title="Account"><i data-feather="user"></i></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-16">
+
+
+    
+    
+        <div class="max-w-3xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl heading-font font-bold mb-4" data-aos="fade-down">Get In Touch</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-400 mb-12" data-aos="fade-up">Have a question, a commission idea, or just want to say hello? Drop a line below.</p>
+        </div>
+
+        <div class="max-w-4xl mx-auto bg-light-card dark:bg-dark-card p-8 md:p-12 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700" data-aos="fade-up" data-aos-delay="200">
+            <form id="contact-form">
+                <div id="form-response" class="mb-6 text-center"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium mb-2">Full Name</label>
+                        <input type="text" name="name" id="name" class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gold transition" placeholder="Lameez Layloo" required>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium mb-2">Email Address</label>
+                        <input type="email" name="email" id="email" class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gold transition" placeholder="lameez@example.com" required>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label for="phone" class="block text-sm font-medium mb-2">Phone Number (Optional)</label>
+                    <input type="tel" name="phone" id="phone" class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gold transition" placeholder="+27 12 345 6789">
+                </div>
+                <div class="mb-8">
+                    <label for="message" class="block text-sm font-medium mb-2">Your Question / Message</label>
+                    <textarea name="message" id="message" rows="6" class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gold transition" placeholder="I'm interested in a custom piece..." required></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" id="submit-btn" class="bg-gold text-black font-bold py-3 px-12 rounded-full hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300">
+                        Send Message
+                    </button>
+                </div>
+            </form>
+        </div>
+    
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+        // Initialize feather icons
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+
+        // Populate fields if user is logged in
+        if (typeof AuthManager !== 'undefined' && AuthManager.isLoggedIn()) {
+            const user = AuthManager.getCurrentUser();
+            if (user) {
+                if (user.username) document.getElementById('name').value = user.username;
+                if (user.email) document.getElementById('email').value = user.email;
+                if (user.phone) document.getElementById('phone').value = user.phone;
+            }
+        }
+
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const submitBtn = document.getElementById('submit-btn');
+            const formResponse = document.getElementById('form-response');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            formResponse.innerHTML = '';
+
+            fetch('api/contact.html', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    formResponse.innerHTML = `<div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">${result.message}</div>`;
+                    form.reset();
+                    // Restore pre-filled values if they exist
+                    if (typeof AuthManager !== 'undefined' && AuthManager.isLoggedIn()) {
+                        const user = AuthManager.getCurrentUser();
+                        if (user) {
+                            if (user.username) document.getElementById('name').value = user.username;
+                            if (user.email) document.getElementById('email').value = user.email;
+                            if (user.phone) document.getElementById('phone').value = user.phone;
+                        }
+                    }
+                } else {
+                    formResponse.innerHTML = `<div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">${result.message}</div>`;
+                }
+            })
+            .catch(error => {
+                formResponse.innerHTML = `<div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">An unexpected error occurred. Please try again.</div>`;
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+            });
+        });
+    });
+    </script>
+
+
+</main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 dark:bg-black py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="heading-font text-2xl mb-4 text-gold">Illuminated By Artistry</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Premium tattoo studio dedicated to creating meaningful, high-quality body art.</p>
+                </div>
+                <div>
+                    <h4 class="heading-font text-xl mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-600 dark:text-gray-400 hover:text-gold transition">Artists</a></li>
+                        <li><a href="gallery_page.html" class="text-gray-600 dark:text-gray-400 hover:text-gold transition">Gallery</a></li>
+                        <li><a href="contact.html" class="text-gray-600 dark:text-gray-400 hover:text-gold transition">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="heading-font text-xl mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-600 dark:text-gray-400">
+                        <li class="flex items-center"><i data-feather="map-pin" class="mr-2 text-gold"></i>Allen's Nek, Roodepoort, Gauteng</li>
+                        <li class="flex items-center"><i data-feather="phone" class="mr-2 text-gold"></i>+27 68 042 4933</li>
+                        <li class="flex items-center"><i data-feather="mail" class="mr-2 text-gold"></i>illuminatedbyartistry@gmail.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="heading-font text-xl mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/illuminated_by_artistry?igsh=MXRsa3lmczFkNjI1bg==" class="text-gray-600 dark:text-gray-400 hover:text-gold transition" title="Instagram"><i data-feather="instagram"></i></a>
+                        <a href="https://www.facebook.com/share/16SEHkUjyS/" class="text-gray-600 dark:text-gray-400 hover:text-gold transition" title="Facebook"><i data-feather="facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-300 dark:border-gray-700 pt-8">
+                <p class="text-center text-gray-600 dark:text-gray-400">&copy; 2024 Illuminated By Artistry. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="../assets/js/setup.js"></script>
+    <script src="../assets/js/theme.js"></script>
+    <script>
+        // Initialize AOS for animations
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+        
+        // Initialize feather icons
+        feather.replace();
+        
+        // Setup theme toggle
+        DOMUtils.setupThemeToggle('theme-toggle');
+    </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!-- 
+ADMIN PAGE TEMPLATE
+Use this template for all admin pages in the admin/ folder
+Admin pages are protected with client-side authentication check
+-->
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Illuminated By Artistry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#f9fafb',
+                        'dark-bg': '#111827',
+                        'dark-card': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-white">
+    
+    <!-- Admin Sidebar -->
+    <div class="relative min-h-screen lg:flex">
+        <aside class="w-64 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:h-screen">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-800">
+                <h1 class="heading-font text-2xl text-gold">Admin Panel</h1>
+            </div>
+            
+            <nav class="p-6 space-y-2">
+                <a href="admin-dashboard.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Dashboard</a>
+                <a href="admin-artists.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Artists</a>
+                <a href="admin-products.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Products</a>
+                <a href="admin-services.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Services</a>
+                <a href="admin-orders.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Orders</a>
+                <a href="admin-gallery-management.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Gallery</a>
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+                    <button id="logout-btn" class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900 text-red-600" title="Logout">Logout</button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            
+
+<div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+    <!-- Pickup Orders Alert -->
+    <div id="pickup-alert" class="hidden bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 p-4 mb-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <i data-feather="alert-circle" class="w-5 h-5 text-amber-600 dark:text-amber-400 mr-3"></i>
+                <div>
+                    <h5 class="font-semibold text-amber-800 dark:text-amber-300">Pending Pickup Orders</h5>
+                    <p class="text-sm text-amber-700 dark:text-amber-400">You have <span id="pickup-count" class="font-bold">0</span> pending pickup order(s) that require customer contact.</p>
+                </div>
+            </div>
+            <button id="view-pickup-orders" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-md text-sm font-medium transition-colors">
+                View Pickup Orders
+            </button>
+        </div>
+    </div>
+    
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+        <h4 class="text-xl font-semibold heading-font">Order Management</h4>
+        <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+            <input type="text" id="search-orders" placeholder="Search by Order ID or Name..." class="w-full sm:w-64 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold">
+            <select id="filter-status" class="w-full sm:w-auto bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold">
+                <option value="">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+            <select id="filter-delivery" class="w-full sm:w-auto bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold">
+                <option value="">All Orders</option>
+                <option value="pickup">Pickup Only</option>
+                <option value="delivery">Delivery Only</option>
+            </select>
+        </div>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" id="orders-table">
+            <thead class="bg-gray-50 dark:bg-gray-800/50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Order ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Customer</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-light-card dark:bg-dark-card divide-y divide-gray-200 dark:divide-gray-800">
+                <!-- Order rows will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Order Detail Modal -->
+<div id="order-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 hidden">
+    <div class="bg-light-card dark:bg-dark-card p-8 rounded-lg shadow-2xl w-full max-w-3xl transform transition-all">
+        <div class="flex justify-between items-center mb-6">
+            <h4 id="modal-order-title" class="text-2xl font-bold heading-font">Order Details</h4>
+            <button id="close-modal" class="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200">&times;</button>
+        </div>
+        <div id="modal-content" class="space-y-6">
+            <!-- Order details will be loaded here -->
+        </div>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const API_URL = 'api/orders.php';
+    const ordersTableBody = document.querySelector('#orders-table tbody');
+    const modal = document.getElementById('order-modal');
+    const closeModalBtn = document.getElementById('close-modal');
+    const modalContent = document.getElementById('modal-content');
+    const searchInput = document.getElementById('search-orders');
+    const statusFilter = document.getElementById('filter-status');
+    const deliveryFilter = document.getElementById('filter-delivery');
+    const pickupAlert = document.getElementById('pickup-alert');
+    const pickupCount = document.getElementById('pickup-count');
+    const viewPickupBtn = document.getElementById('view-pickup-orders');
+
+    let allOrders = [];
+
+    const formatCurrency = (amount) => new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(amount);
+    const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const getStatusBadge = (status) => {
+        const lowerStatus = status.toLowerCase();
+        const statusClasses = {
+            pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+            processing: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+            shipped: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300',
+            delivered: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+            cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
+        };
+        return `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClasses[lowerStatus] || 'bg-gray-100 text-gray-800'}">${status}</span>`;
+    };
+
+    const isPickupOrder = (order) => order.shipping_address && order.shipping_address.startsWith('PICKUP IN PERSON');
+
+    const createTableRow = (order) => {
+        const isPickup = isPickupOrder(order);
+        const rowClass = isPickup && order.status.toLowerCase() === 'pending' 
+            ? 'hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500' 
+            : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer';
+        
+        return `
+        <tr data-id="${order.id}" class="${rowClass}">
+            <td class="px-6 py-4 whitespace-nowrap font-mono text-sm text-gold">#${order.id}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium">${order.user_name || 'N/A'}</div>
+                <div class="text-sm text-gray-500">${order.user_email || 'N/A'}</div>
+                ${isPickup ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 mt-1"><i data-feather="package" class="w-3 h-3 mr-1"></i>PICKUP</span>' : ''}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">${formatDate(order.created_at)}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">${formatCurrency(order.total_amount)}</td>
+            <td class="px-6 py-4 whitespace-nowrap">${getStatusBadge(order.status)}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button class="text-gray-400 hover:text-gold p-2 view-btn"><i data-feather="eye" class="w-5 h-5"></i></button>
+            </td>
+        </tr>
+    `;
+    };
+
+    const renderTable = (orders) => {
+        if (orders.length === 0) {
+            ordersTableBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">No orders found.</td></tr>';
+            return;
+        }
+        ordersTableBody.innerHTML = orders.map(createTableRow).join('');
+        feather.replace();
+    };
+
+    const updatePickupAlert = (orders) => {
+        const pendingPickups = orders.filter(order => 
+            isPickupOrder(order) && order.status.toLowerCase() === 'pending'
+        );
+        
+        if (pendingPickups.length > 0) {
+            pickupCount.textContent = pendingPickups.length;
+            pickupAlert.classList.remove('hidden');
+        } else {
+            pickupAlert.classList.add('hidden');
+        }
+        
+        feather.replace();
+    };
+
+    const loadOrders = async () => {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            if (data.error) throw new Error(data.error);
+            allOrders = data;
+            updatePickupAlert(allOrders);
+            renderTable(allOrders);
+        } catch (error) {
+            console.error('Error loading orders:', error);
+            ordersTableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4">Error loading orders: ${error.message}</td></tr>`;
+        }
+    };
+
+    const filterAndSearchOrders = () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const status = statusFilter.value;
+        const delivery = deliveryFilter.value;
+        
+        const filteredOrders = allOrders.filter(order => {
+            const matchesSearch = searchTerm === '' ||
+                order.id.toString().includes(searchTerm) ||
+                (order.user_name && order.user_name.toLowerCase().includes(searchTerm));
+            
+            const matchesStatus = status === '' || order.status.toLowerCase() === status;
+            
+            const isPickup = isPickupOrder(order);
+            const matchesDelivery = delivery === '' || 
+                (delivery === 'pickup' && isPickup) ||
+                (delivery === 'delivery' && !isPickup);
+
+            return matchesSearch && matchesStatus && matchesDelivery;
+        });
+
+        renderTable(filteredOrders);
+    };
+
+    const openModal = (order) => {
+        const isPickup = isPickupOrder(order);
+        const phoneMatch = order.shipping_address ? order.shipping_address.match(/Phone: (.+)/) : null;
+        const customerPhone = phoneMatch ? phoneMatch[1] : 'Not provided';
+        
+        const itemsHtml = order.items.map(item => `
+            <div class="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center">
+                    <img src="${item.image_url || 'Logo/logo-black.png'}" class="w-12 h-12 rounded-md object-cover mr-4" alt="${item.name}">
+                    <div>
+                        <p class="font-semibold">${item.name}</p>
+                        <p class="text-sm text-gray-500">Qty: ${item.quantity}</p>
+                    </div>
+                </div>
+                <p class="font-semibold">${formatCurrency(item.price * item.quantity)}</p>
+            </div>
+        `).join('');
+
+        const pickupAlert = isPickup ? `
+            <div class="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 p-4 mb-6">
+                <div class="flex items-center">
+                    <i data-feather="alert-circle" class="w-5 h-5 text-amber-600 dark:text-amber-400 mr-3"></i>
+                    <div>
+                        <h5 class="font-bold text-amber-800 dark:text-amber-300">PICKUP ORDER - Customer Contact Required</h5>
+                        <p class="text-sm text-amber-700 dark:text-amber-400 mt-1">This customer wants to pick up their order in person and pay on collection. Please contact them to arrange pickup details.</p>
+                        <p class="text-sm font-semibold text-amber-900 dark:text-amber-200 mt-2">Contact Phone: <a href="tel:${customerPhone}" class="underline hover:text-amber-600">${customerPhone}</a></p>
+                    </div>
+                </div>
+            </div>
+        ` : '';
+
+        modalContent.innerHTML = `
+            ${pickupAlert}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                <div>
+                    <h5 class="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Customer</h5>
+                    <p class="font-semibold">${order.user_name}</p>
+                    <p>${order.user_email}</p>
+                    ${isPickup ? `<p class="mt-2"><span class="font-semibold">Phone:</span> <a href="tel:${customerPhone}" class="text-gold hover:underline">${customerPhone}</a></p>` : `<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">${order.shipping_address || 'No address provided'}</p>`}
+                </div>
+                <div>
+                    <h5 class="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Order Summary</h5>
+                    <p><span class="font-semibold">Order ID:</span> #${order.id}</p>
+                    <p><span class="font-semibold">Date:</span> ${formatDate(order.created_at)}</p>
+                    <p><span class="font-semibold">Total:</span> <span class="text-lg font-bold">${formatCurrency(order.total_amount)}</span></p>
+                    ${isPickup ? '<p class="text-xs text-amber-600 dark:text-amber-400 mt-2 font-semibold">Payment on collection</p>' : ''}
+                </div>
+                <div>
+                    <h5 class="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Status</h5>
+                    <select id="update-status" data-id="${order.id}" class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gold">
+                        <option value="pending" ${order.status.toLowerCase() === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="processing" ${order.status.toLowerCase() === 'processing' ? 'selected' : ''}>Processing</option>
+                        <option value="shipped" ${order.status.toLowerCase() === 'shipped' ? 'selected' : ''}>Shipped</option>
+                        <option value="delivered" ${order.status.toLowerCase() === 'delivered' ? 'selected' : ''}>Delivered</option>
+                        <option value="cancelled" ${order.status.toLowerCase() === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-6">
+                <h5 class="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Items</h5>
+                <div class="max-h-60 overflow-y-auto pr-2">${itemsHtml}</div>
+            </div>
+        `;
+        feather.replace();
+        modal.classList.remove('hidden');
+    };
+
+    const closeModal = () => {
+        modal.classList.add('hidden');
+    };
+
+    const handleTableClick = (e) => {
+        const row = e.target.closest('tr');
+        if (!row || !row.dataset.id) return;
+
+        const orderId = row.dataset.id;
+        const order = allOrders.find(o => o.id == orderId);
+
+        if (order) {
+            openModal(order);
+        }
+    };
+
+    const handleStatusUpdate = async (e) => {
+        if (e.target.id === 'update-status') {
+            const orderId = e.target.dataset.id;
+            const newStatus = e.target.value;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: orderId, status: newStatus })
+                });
+                const result = await response.json();
+                if (result.error) throw new Error(result.error);
+                
+                const orderToUpdate = allOrders.find(o => o.id == orderId);
+                if(orderToUpdate) orderToUpdate.status = newStatus;
+                filterAndSearchOrders();
+
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('Failed to update status. Check console for details.');
+            }
+        }
+    };
+
+    viewPickupBtn.addEventListener('click', () => {
+        statusFilter.value = 'pending';
+        deliveryFilter.value = 'pickup';
+        filterAndSearchOrders();
+    });
+
+    closeModalBtn.addEventListener('click', closeModal);
+    ordersTableBody.addEventListener('click', handleTableClick);
+    modalContent.addEventListener('change', handleStatusUpdate);
+    searchInput.addEventListener('input', filterAndSearchOrders);
+    statusFilter.addEventListener('change', filterAndSearchOrders);
+    deliveryFilter.addEventListener('change', filterAndSearchOrders);
+
+    loadOrders();
+});
+</script>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/setup.js"></script>
+    <script>
+        // Check if user is admin, redirect if not
+        if (!AuthManager.isAdmin()) {
+            window.location.href = '../user/login_page.html';
+        }
+        
+        // Setup logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            AuthManager.logout();
+            window.location.href = '../user/index.html';
+        });
+        
+        feather.replace();
+    </script>
+</body>
+</html>

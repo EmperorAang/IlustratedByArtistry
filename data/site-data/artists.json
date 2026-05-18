@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "artists": [
+    {
+      "id": 1,
+      "name": "Lameez",
+      "image_path": "../assets/uploads/artists/lameez.jpg",
+      "bio": "Lead artist with 10+ years of experience in traditional and contemporary tattoo styles. Specializes in custom designs and detailed portrait work.",
+      "specialties": ["Traditional", "Portraits", "Custom Designs"],
+      "experience": "10+ years"
+    },
+    {
+      "id": 2,
+      "name": "Artist Name",
+      "image_path": "../assets/uploads/artists/artist2.jpg",
+      "bio": "Passionate artist dedicated to creating meaningful art. Specializes in various styles and brings unique perspectives to every piece.",
+      "specialties": ["Watercolor", "Fine Line", "Modern"],
+      "experience": "7+ years"
+    },
+    {
+      "id": 3,
+      "name": "Artist Name",
+      "image_path": "../assets/uploads/artists/artist3.jpg",
+      "bio": "Expert in black and gray work and intricate sleeve designs. Committed to bringing client visions to life with precision.",
+      "specialties": ["Black & Gray", "Sleeves", "Geometric"],
+      "experience": "8+ years"
+    }
+  ]
+}

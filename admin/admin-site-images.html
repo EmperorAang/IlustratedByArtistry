@@ -1,0 +1,348 @@
+<!-- 
+ADMIN PAGE TEMPLATE
+Use this template for all admin pages in the admin/ folder
+Admin pages are protected with client-side authentication check
+-->
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Illuminated By Artistry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#f9fafb',
+                        'dark-bg': '#111827',
+                        'dark-card': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-white">
+    
+    <!-- Admin Sidebar -->
+    <div class="relative min-h-screen lg:flex">
+        <aside class="w-64 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:h-screen">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-800">
+                <h1 class="heading-font text-2xl text-gold">Admin Panel</h1>
+            </div>
+            
+            <nav class="p-6 space-y-2">
+                <a href="admin-dashboard.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Dashboard</a>
+                <a href="admin-artists.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Artists</a>
+                <a href="admin-products.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Products</a>
+                <a href="admin-services.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Services</a>
+                <a href="admin-orders.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Orders</a>
+                <a href="admin-gallery-management.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Gallery</a>
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+                    <button id="logout-btn" class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900 text-red-600" title="Logout">Logout</button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            
+
+            <main class="p-6 flex-1 overflow-y-auto">
+                <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                        <h4 class="text-xl font-semibold heading-font">Site Images Management</h4>
+                        <button id="save-changes-btn" class="w-full sm:w-auto bg-gold text-black font-bold py-2 px-4 rounded-lg hover:bg-yellow-400 transition duration-300 flex items-center justify-center">
+                            <i data-feather="save" class="w-5 h-5 mr-2"></i> Save All Changes
+                        </button>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="image-filter" class="block text-sm font-medium mb-2">Filter by Location</label>
+                        <select id="image-filter" class="w-full md:w-64 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gold">
+                            <option value="all">All Images</option>
+                            <option value="homepage">Homepage</option>
+                            <option value="about">About Page</option>
+                            <option value="logo">Logo</option>
+                        </select>
+                    </div>
+
+                    <div id="images-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Image cards will be loaded here -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+<!-- Success/Error Messages -->
+<div id="message-container" class="fixed top-20 right-4 z-50 hidden">
+    <div id="message" class="p-4 rounded-lg shadow-lg"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const imagesContainer = document.getElementById('images-container');
+    const imageFilter = document.getElementById('image-filter');
+    const saveChangesBtn = document.getElementById('save-changes-btn');
+    
+    // Define all hardcoded images with their locations and descriptions
+    const siteImages = [
+        {
+            id: 'logo-main',
+            key: 'logo_main',
+            currentPath: 'Logo/Logo.jpg',
+            location: 'logo',
+            title: 'Main Logo',
+            description: 'Primary logo displayed in the homepage hero section and throughout the site'
+        },
+        {
+            id: 'homepage-hero',
+            key: 'homepage_hero',
+            currentPath: 'Logo/Logo.jpg',
+            location: 'homepage',
+            title: 'Homepage Hero Image',
+            description: 'Large featured image in the hero section on the homepage'
+        },
+        {
+            id: 'homepage-featured-1',
+            key: 'homepage_featured_1',
+            currentPath: 'Gallery/Images/IMG_7820.jpeg',
+            location: 'homepage',
+            title: 'Homepage Featured Tattoo 1',
+            description: 'First featured tattoo image in the homepage gallery section'
+        },
+        {
+            id: 'homepage-featured-2',
+            key: 'homepage_featured_2',
+            currentPath: 'Gallery/Images/IMG_7638.jpeg',
+            location: 'homepage',
+            title: 'Homepage Featured Tattoo 2',
+            description: 'Second featured tattoo image in the homepage gallery section'
+        },
+        {
+            id: 'homepage-featured-3',
+            key: 'homepage_featured_3',
+            currentPath: 'Gallery/Images/IMG_7595.jpeg',
+            location: 'homepage',
+            title: 'Homepage Featured Tattoo 3',
+            description: 'Third featured tattoo image in the homepage gallery section'
+        },
+        {
+            id: 'about-artist-portrait',
+            key: 'about_artist_portrait',
+            currentPath: 'https://via.placeholder.com/400x500',
+            location: 'about',
+            title: 'Artist Portrait',
+            description: 'Portrait image of the artist displayed on the About page'
+        }
+    ];
+
+    let updatedImages = {};
+    let currentConfig = {};
+
+    const createImageCard = (image) => {
+        // Use configured path if available, otherwise use default
+        const actualPath = currentConfig[image.key] || image.currentPath;
+        const isExternal = actualPath.startsWith('http');
+        const displayPath = isExternal ? actualPath : actualPath;
+        
+        return `
+            <div class="bg-light-card dark:bg-dark-card rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-gray-700" data-location="${image.location}">
+                <div class="aspect-video bg-gray-200 dark:bg-gray-700 relative overflow-hidden">
+                    <img src="${displayPath}" alt="${image.title}" class="w-full h-full object-cover" id="preview-${image.id}" onerror="this.src='Logo/logo-black.png'">
+                </div>
+                <div class="p-4">
+                    <h5 class="font-semibold text-lg mb-2">${image.title}</h5>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">${image.description}</p>
+                    <div class="mb-3">
+                        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Current Path:</label>
+                        <code class="text-xs bg-gray-100 dark:bg-gray-900 p-1 rounded block truncate" id="path-${image.id}">${actualPath}</code>
+                    </div>
+                    <div class="space-y-2">
+                        <label for="file-${image.id}" class="block text-sm font-medium">Upload New Image</label>
+                        <input 
+                            type="file" 
+                            id="file-${image.id}" 
+                            accept="image/*" 
+                            data-image-id="${image.id}"
+                            data-image-key="${image.key}"
+                            class="image-upload w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gold file:text-black hover:file:bg-yellow-400"
+                        >
+                    </div>
+                    <div class="mt-3 flex items-center text-xs text-gray-500 dark:text-gray-400">
+                        <i data-feather="map-pin" class="w-3 h-3 mr-1"></i>
+                        <span class="capitalize">${image.location}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+
+    const renderImages = (filter = 'all') => {
+        const filtered = filter === 'all' 
+            ? siteImages 
+            : siteImages.filter(img => img.location === filter);
+        
+        if (filtered.length === 0) {
+            imagesContainer.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">No images found for this filter.</div>';
+            return;
+        }
+        
+        imagesContainer.innerHTML = filtered.map(createImageCard).join('');
+        feather.replace();
+        attachFileListeners();
+    };
+
+    const attachFileListeners = () => {
+        document.querySelectorAll('.image-upload').forEach(input => {
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const imageId = this.dataset.imageId;
+                    const imageKey = this.dataset.imageKey;
+                    const preview = document.getElementById(`preview-${imageId}`);
+                    const pathDisplay = document.getElementById(`path-${imageId}`);
+                    
+                    // Show preview
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        preview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    // Update path display
+                    if (pathDisplay) {
+                        pathDisplay.textContent = `Pending upload: ${file.name}`;
+                        pathDisplay.classList.add('text-orange-600', 'dark:text-orange-400');
+                    }
+                    
+                    // Store for upload
+                    updatedImages[imageKey] = file;
+                }
+            });
+        });
+    };
+
+    const saveAllChanges = async () => {
+        if (Object.keys(updatedImages).length === 0) {
+            showMessage('info', 'No changes to save');
+            return;
+        }
+
+        saveChangesBtn.disabled = true;
+        saveChangesBtn.innerHTML = '<i data-feather="loader" class="w-5 h-5 mr-2 animate-spin"></i> Saving...';
+        feather.replace();
+
+        const formData = new FormData();
+        for (const [key, file] of Object.entries(updatedImages)) {
+            formData.append(key, file);
+        }
+
+        try {
+            const response = await fetch('api/site-images.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showMessage('success', 'Images updated successfully! Refreshing page...');
+                updatedImages = {};
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                throw new Error(result.error || 'Failed to save images');
+            }
+        } catch (error) {
+            console.error('Error saving images:', error);
+            showMessage('error', 'Failed to save images: ' + error.message);
+            saveChangesBtn.disabled = false;
+            saveChangesBtn.innerHTML = '<i data-feather="save" class="w-5 h-5 mr-2"></i> Save All Changes';
+            feather.replace();
+        }
+    };
+
+    const showMessage = (type, text) => {
+        const container = document.getElementById('message-container');
+        const message = document.getElementById('message');
+        
+        const colors = {
+            success: 'bg-green-500 text-white',
+            error: 'bg-red-500 text-white',
+            info: 'bg-blue-500 text-white'
+        };
+        
+        message.className = `p-4 rounded-lg shadow-lg ${colors[type]}`;
+        message.textContent = text;
+        container.classList.remove('hidden');
+        
+        setTimeout(() => {
+            container.classList.add('hidden');
+        }, 5000);
+    };
+
+    const loadCurrentConfig = async () => {
+        try {
+            const response = await fetch('api/site-images.php');
+            const result = await response.json();
+            
+            if (result.success && result.config) {
+                currentConfig = result.config;
+            }
+        } catch (error) {
+            console.error('Error loading current configuration:', error);
+        }
+    };
+
+    imageFilter.addEventListener('change', (e) => {
+        renderImages(e.target.value);
+    });
+
+    saveChangesBtn.addEventListener('click', saveAllChanges);
+
+    // Initial load
+    const init = async () => {
+        await loadCurrentConfig();
+        renderImages();
+    };
+    
+    init();
+});
+</script>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/setup.js"></script>
+    <script>
+        // Check if user is admin, redirect if not
+        if (!AuthManager.isAdmin()) {
+            window.location.href = '../user/login_page.html';
+        }
+        
+        // Setup logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            AuthManager.logout();
+            window.location.href = '../user/index.html';
+        });
+        
+        feather.replace();
+    </script>
+</body>
+</html>

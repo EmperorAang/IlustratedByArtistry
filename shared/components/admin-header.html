@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Illuminated By Artistry</title>
+    
+    <!-- Styles and Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#f3f4f6',
+                        'light-text': '#1f2937',
+                        'light-sidebar': '#ffffff',
+                        'light-card': '#ffffff',
+                        'dark-bg': '#111827',
+                        'dark-text': '#f9fafb',
+                        'dark-sidebar': '#1f2937',
+                        'dark-card': '#374151',
+                    },
+                    fontFamily: {
+                        'playfair': ['"Playfair Display"', 'serif'],
+                        'raleway': ['Raleway', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text">
+<div class="relative min-h-screen lg:flex">
+    <?php require_once 'admin-sidebar.html'; ?>
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Top Navigation -->
+        <header class="bg-light-card dark:bg-dark-card shadow-sm z-10">
+            <div class="flex justify-between items-center p-4">
+                <div class="flex items-center">
+                    <button id="mobile-menu-button" class="mr-4 p-2 text-gray-600 dark:text-gray-400 hover:text-gold dark:hover:text-gold hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors lg:hidden">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                    <h2 class="text-xl font-semibold heading-font">
+                        <?php 
+                            $page = basename($_SERVER['PHP_SELF']);
+                            switch ($page) {
+                                case 'admin-dashboard.html': echo 'Dashboard'; break;
+                                case 'admin-services.html': echo 'Manage Services'; break;
+                                case 'admin-products.html': echo 'Manage Products'; break;
+                                case 'admin-orders.html': echo 'Manage Orders'; break;
+                                case 'admin-gallery-management.html': echo 'Manage Gallery'; break;
+                                case 'admin-revenue.html': echo 'Revenue'; break;
+                                case 'admin-messages.html': echo 'Contact Messages'; break;
+                                default: echo 'Admin'; break;
+                            }
+                        ?>
+                    </h2>
+                </div>
+                <div class="flex items-center space-x-2 sm:space-x-6">
+                    <button class="theme-toggle-btn text-gray-600 dark:text-gray-300 hover:text-gold dark:hover:text-gold p-2 rounded-full">
+                        <i data-feather="sun" class="w-5 h-5 hidden dark:block"></i>
+                        <i data-feather="moon" class="w-5 h-5 block dark:hidden"></i>
+                    </button>
+                    <div class="flex items-center">
+                        <img src="https://i.pravatar.cc/40?u=admin" alt="Admin" class="w-8 h-8 rounded-full mr-2 sm:mr-3 border-2 border-gold">
+                        <span class="font-medium hidden sm:block"><?php echo htmlspecialchars($_SESSION['username'] ?? 'Admin'); ?></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="flex-1 overflow-y-auto p-6">
+            <!-- Page content starts here -->

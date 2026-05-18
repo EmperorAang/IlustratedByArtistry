@@ -1,0 +1,237 @@
+<!-- 
+ADMIN PAGE TEMPLATE
+Use this template for all admin pages in the admin/ folder
+Admin pages are protected with client-side authentication check
+-->
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Illuminated By Artistry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'light-bg': '#f9fafb',
+                        'dark-bg': '#111827',
+                        'dark-card': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-white">
+    
+    <!-- Admin Sidebar -->
+    <div class="relative min-h-screen lg:flex">
+        <aside class="w-64 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:h-screen">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-800">
+                <h1 class="heading-font text-2xl text-gold">Admin Panel</h1>
+            </div>
+            
+            <nav class="p-6 space-y-2">
+                <a href="admin-dashboard.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Dashboard</a>
+                <a href="admin-artists.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Artists</a>
+                <a href="admin-products.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Products</a>
+                <a href="admin-services.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Services</a>
+                <a href="admin-orders.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Orders</a>
+                <a href="admin-gallery-management.html" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Gallery</a>
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+                    <button id="logout-btn" class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900 text-red-600" title="Logout">Logout</button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            
+
+            <main class="p-6 flex-1 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-semibold leading-tight heading-font">Manage Tattoo Images</h3>
+                </div>
+                
+                <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                    <h4 class="text-xl font-semibold heading-font mb-4">Upload New Tattoo</h4>
+                    <form id="upload-form" class="mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="tattoo-name" class="block text-sm font-medium mb-1">Tattoo Name</label>
+                                <input type="text" id="tattoo-name" name="name" required class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gold">
+                            </div>
+                            <div>
+                                <label for="tattoo-image" class="block text-sm font-medium mb-1">Upload Image</label>
+                                <input type="file" id="tattoo-image" name="image" accept="image/*" required class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gold file:text-black hover:file:bg-yellow-400">
+                            </div>
+                        </div>
+                        <div class="mt-6 flex justify-end">
+                            <button type="submit" class="bg-gold text-black font-bold py-2 px-4 rounded-md hover:opacity-90 transition-opacity duration-200">
+                                Upload Tattoo
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="mt-8 bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                    <h4 class="text-xl font-semibold heading-font mb-4">Existing Tattoos</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full leading-normal" id="images-table">
+                            <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                <tr>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Image
+                                    </th>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Name
+                                    </th>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="images-tbody" class="divide-y divide-gray-200 dark:divide-gray-800">
+                                <!-- Images will be loaded here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadForm = document.getElementById('upload-form');
+    const imagesTbody = document.getElementById('images-tbody');
+
+    // Fetch and display images
+    function fetchImages() {
+        fetch('api/tattoo_images.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    imagesTbody.innerHTML = '';
+                    data.images.forEach(image => {
+                        const row = `
+                            <tr id="image-row-${image.id}">
+                                <td class="px-5 py-5 text-sm">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 w-16 h-16">
+                                            <img class="w-full h-full rounded-md object-cover"
+                                                 src="${image.image_url}"
+                                                 alt="${image.name}" />
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-5 text-sm">
+                                    <p class="whitespace-no-wrap">${image.name}</p>
+                                </td>
+                                <td class="px-5 py-5 text-sm text-right">
+                                    <button onclick="deleteImage(${image.id})"
+                                            class="text-gray-400 hover:text-red-500 p-2">
+                                        <i data-feather="trash-2" class="w-5 h-5"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                        imagesTbody.innerHTML += row;
+                    });
+                    feather.replace();
+                } else {
+                    alert('Error fetching images: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Handle form submission
+    uploadForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('api/tattoo_images.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                fetchImages(); // Refresh the list
+                uploadForm.reset();
+            } else {
+                alert('Upload failed: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred during upload.');
+        });
+    });
+
+    // Delete image function
+    window.deleteImage = function(id) {
+        if (!confirm('Are you sure you want to delete this tattoo image?')) {
+            return;
+        }
+
+        fetch('api/tattoo_images.php', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: id })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const row = document.getElementById(`image-row-${id}`);
+                if(row) {
+                    row.remove();
+                }
+            } else {
+                alert('Deletion failed: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred during deletion.');
+        });
+    }
+
+    // Initial fetch
+    fetchImages();
+});
+</script>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/setup.js"></script>
+    <script>
+        // Check if user is admin, redirect if not
+        if (!AuthManager.isAdmin()) {
+            window.location.href = '../user/login_page.html';
+        }
+        
+        // Setup logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            AuthManager.logout();
+            window.location.href = '../user/index.html';
+        });
+        
+        feather.replace();
+    </script>
+</body>
+</html>
